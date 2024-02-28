@@ -1,0 +1,51 @@
+{% load static %}
+{% block hero %}
+{#    {% if messages %}#}
+{#        {% for message in messages %}#}
+{#            <div class="alert alert-warning d-flex align-items-center" role="alert">#}
+{#                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:">#}
+{#                    <use xlink:href="#exclamation-triangle-fill"/>#}
+{#                </svg>#}
+{#                <div>#}
+{#                    {{ message }}#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endfor %}#}
+{#    {% endif %}#}
+    <!-- Hero section Start -->
+    <section class="hero-1 bg-primary" id="home">
+        <!-- bg-overlay-img -->
+        <div class="bg-overlay overflow-hidden bg-transparent">
+            <div class="hero-1-bg"></div>
+        </div>
+
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+                    <div class="hero-wrapper text-white-50 text-center">
+                        <h5 class="text-white-50 home-small-title">NoteShare</h5>
+                        <h1 class="hero-1-title display-4 text-white mb-4">We love make learning amazing and simple</h1>
+
+                        <p class="mb-4">A dynamic online platform designed for students, facilitating the
+                            sharing, buying, and selling of study materials. Experience personalized learning enriched
+                            by advanced AI technology, all within a secure and intuitive environment. Join us at
+                            NoteShare, where knowledge meets innovation</p>
+
+                        <div class="pt-2">
+                            <a href="{% url 'account:login' %}" class="btn btn-light me-2">Login</a>
+                            <a href="{% url 'account:register' %}" class="btn btn-info">Sign Up <i
+                                    class="mdi mdi-arrow-right ms-1"></i></a>
+                        </div>
+
+                        <div class="home-img mt-5">
+                            <img src="{% static 'images/home-img.png' %}" alt="" class="img-fluid mx-auto d-block"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+    </section>
+    <!-- Hero section End -->
+{% endblock hero %}
