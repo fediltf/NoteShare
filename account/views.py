@@ -1,4 +1,5 @@
-from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, PasswordChangeView, \
+    PasswordChangeDoneView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -19,7 +20,7 @@ def login_user(request):
         if user is not None:
             login(request, user)
             messages.success(request, 'You have been successfully logged in..')
-            return redirect('home')
+            return redirect('dashboard:index')
         else:
             messages.success(request, 'Error! Try Again..')
             return redirect('account:login')
@@ -60,4 +61,9 @@ class CustomPasswordResetView(PasswordResetView):
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     template_name = 'registration/password_reset_confirm.html'
     success_url = reverse_lazy('password_reset_complete')
+    form_class = CustomSetPasswordForm
+
+class CustomPasswordChangeView(PasswordChangeView):
+    template_name = 'registration/password_reset_confirm.html'
+    success_url = reverse_lazy('account:password_change_done')
     form_class = CustomSetPasswordForm

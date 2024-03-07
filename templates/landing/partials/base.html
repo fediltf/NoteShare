@@ -1,0 +1,82 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>NoteShare - Your Gateway To Collaborative Learning</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Premium Bootstrap 5 Landing Page Template" />
+    <meta name="keywords" content="bootstrap 5, premium, marketing, multipurpose" />
+    <meta name="author" content="Themesdesign" />
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{% static 'images/favicon_NoteShare.png' %}" />
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" />
+
+    <!-- Material Icon -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/materialdesignicons.min.css' %}" />
+
+    <!-- tinyslider -->
+    <link rel="stylesheet" href="{% static 'css/tiny-slider.css' %}">
+
+    <!-- Custom  sCss -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+</head>
+
+<body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="58">
+
+    {% block navclass %}
+    {% endblock navclass %}
+
+    {% block navbar %}
+        {% include "landing/partials/navbar.html" %}
+    {% endblock navbar %}
+
+    {% block hero %}
+    {% endblock hero %}
+
+    {% block about %}
+        {% include "landing/partials/about.html" %}
+    {% endblock about %}
+
+    {% block features %}
+        {% include "landing/partials/features.html" %}
+    {% endblock features %}
+    
+    {% block clients %}
+        {% include "landing/partials/clients.html" %}
+    {% endblock clients %}
+
+    {% block cta %}
+        {% include "landing/partials/cta.html" %}
+    {% endblock cta %}
+
+    {% block pricing %}
+        {% include "landing/partials/pricing.html" %}
+    {% endblock pricing %}
+
+    {% block contact %}
+        {% include "landing/partials/contact.html" %}
+    {% endblock contact %}
+
+    {% block footer %}
+        {% include "landing/partials/footer.html" %}
+    {% endblock footer %}
+
+    {% block footer_alt %}
+        {% include "landing/partials/footer_alt.html" %}
+    {% endblock footer_alt %}
+
+    {% block javascript %}
+        {% include "landing/partials/javascript.html" %}
+    {% endblock javascript %}
+
+    {% block extra_js %}
+    {% endblock extra_js %}
+
+
+</body>
+</html>
