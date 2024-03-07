@@ -18,13 +18,13 @@
                 </a>
             </li>
             <li class="nav-item px-3 py-3 border-radius-sm  d-flex align-items-center">
-                <a href="{% url 'tables' %}" class="nav-link text-white p-0">
-                    Tables
+                <a href="{% url 'dashboard:file_manager' %}" class="nav-link text-white p-0">
+                    File Manager
                 </a>
             </li>
             <li class="nav-item px-3 py-3 border-radius-sm  d-flex align-items-center">
-                <a href="{% url 'dashboard:file_manager' %}" class="nav-link text-white p-0">
-                    File Manager
+                <a href="{% url 'tables' %}" class="nav-link text-white p-0">
+                    Tables
                 </a>
             </li>
             <li class="nav-item px-3 py-3 border-radius-sm {% if 'wallet' in segment %} bg-slate-800 {% endif %}  d-flex align-items-center">

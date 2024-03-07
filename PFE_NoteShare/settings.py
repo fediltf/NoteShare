@@ -16,6 +16,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # Application definition
+SITE_ID = 2
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -25,9 +26,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'core.apps.CoreConfig',
-    'account',
-    'sass_processor',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'custom_account',
     'dashboard',
 ]
 
@@ -39,6 +44,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'PFE_NoteShare.urls'
@@ -120,3 +126,26 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # pw reset email
 EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
 EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '501993092894-i2jh49a1709mol6ufs3l50f7c50vtfot.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/'

@@ -1,0 +1,12 @@
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Password reset on 127.0.0.1:8000
+From: webmaster@localhost
+To: fedi@mih.tn
+Date: Fri, 01 Mar 2024 14:48:54 -0000
+Message-ID: <170930453415.16448.17735719019082690972@FediLtf>
+
+Someone asked for password reset for email fedi@mih.tn. Follow the link below:
+http://127.0.0.1:8000/account/reset/Mw/c37vxi-1ebb90b03d82066e9f16b82e8988c105/
+-------------------------------------------------------------------------------
