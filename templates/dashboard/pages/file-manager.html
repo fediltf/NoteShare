@@ -2,218 +2,390 @@
 {% load static file_extension info_value %}
 {% load file_extension %}
 {% load info_value %}
-
 {% block extrastyle %}
-<style>
-  ul li {
-    list-style-type: none;
-  }
-  .dot-separator {
-    height: 2px;
-    width: 2px;
-    background: #000;
-    border-radius: 50%;
-  }
-  .actions span {
-    cursor: pointer;
-  }
-  .modal {
-    z-index: 99999 !important;
-  }
-</style>
-{% endblock extrastyle %}
+    <style>
+        ul li {
+            list-style-type: none;
+        }
 
+        .dot-separator {
+            height: 2px;
+            width: 2px;
+            background: #000;
+            border-radius: 50%;
+        }
+
+        .actions span {
+            cursor: pointer;
+        }
+
+        .modal {
+            z-index: 99999 !important;
+        }
+    </style>
+{% endblock extrastyle %}
 {% block content %}
-<div class="container-fluid py-4 px-5">
-  <div class="row">
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+        </symbol>
+        <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+        </symbol>
+        <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+        </symbol>
+    </svg>
+    <div class="container-fluid py-4 px-5">
+    <div class="row">
     <div class="col-lg-3 border py-2">
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-          {% for breadcrumb in breadcrumbs %}
-            {% if forloop.last %}
-              <li class="breadcrumb-item active" aria-current="page">{{ breadcrumb.name }}</li>
-            {% else %}
-              {% if breadcrumb.name|lower == 'media' %}
-                <li class="breadcrumb-item active" aria-current="page">{{ breadcrumb.name }}</li>
-              {% else %}
-                <li class="breadcrumb-item"><a href="{{ breadcrumb.url }}">{{ breadcrumb.name }}</a></li>
-              {% endif %}
-            {% endif %}
-          {% endfor %}
-        </ol>
-      </nav>
-      <ul class="">
-        {% for directory in directories %}
-          {% if directory.directories %}
-          <li class="">
-            <i class="fa-solid fa-folder"></i>
-            <a 
-              data-bs-toggle="collapse" 
-              href="#collapse{{directory.id}}" 
-              role="button" 
-              aria-expanded="false"
-              aria-controls="collapse{{directory.id}}"
-              onclick="window.location.href = '{% url 'dashboard:file_manager' directory.path|encoded_path %}';"
-            >
-              {{ directory.name }}
-            </a>
-          </li>
-          {% include 'dashboard/includes/subdirectories.html' with directory=directory depth=depth|add:"3" %}
-        {% else %}
-          <li>
-            <i class="fa-solid fa-folder"></i>
-            <a href="{% url 'dashboard:file_manager' directory.path|encoded_path %}">{{ directory.name }}</a>
-          </li>
-          {% endif %}
-        {% endfor %}
-      </ul>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                    {% if forloop.last %}
+                        <li class="breadcrumb-item active" aria-current="page">{{ breadcrumb.name }}</li>
+                    {% else %}
+                        {% if breadcrumb.name|lower == 'media' %}
+                            <li class="breadcrumb-item active" aria-current="page">{{ breadcrumb.name }}</li>
+                        {% else %}
+                            <li class="breadcrumb-item"><a href="{{ breadcrumb.url }}">{{ breadcrumb.name }}</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </ol>
+        </nav>
     </div>
     <div class="col-lg-9 border py-2">
-      <div class="d-flex justify-content-start mb-3">
-        <label for="fileInput">
-          <i class="fa-solid fa-upload text-primary fs-3"></i>
-        </label>
-        <form method="post" action="{% url 'dashboard:upload_file' %}" id="upload-file" enctype="multipart/form-data">
-          {% csrf_token %}
-          <input type="hidden" name="directory" value="{{ selected_directory }}">
-          <input id="fileInput" class="d-none" onchange="submitForm()" type="file" name="file" required>
-        </form>
-      </div>
-      {% if files %}
-        {{files|length|json_script:"files-count"}}
-        <div class="table-responsive">
-          <table class="table">
-            <tr>
-              <th scope="col">File Name</th>
-              <th scope="col">File Type</th>
-              <th scope="col">Actions</th>
-            </tr>
-            {% for file in files %}
-            <tr data-bs-toggle="tooltip" title="{{file.file_path|info_value}}">
-              <td>
-                <span>
-                  {{ file.filename }}
-                </span>
-              </td>
-              <td>{{ file.filename|file_extension|cut:"."|upper }}</td>
-              <td>
-                <div class="d-flex align-items-center actions">
-                  <span data-bs-toggle="modal" data-bs-target="#info-{{forloop.counter}}">
-                    <i title="Info" class="fa-solid fa-info text-success"></i>
-                  </span>
-                  <div class="dot-separator mx-2"></div>
-                  <span data-bs-toggle="modal" data-bs-target="#file-{{forloop.counter}}">
-                    <i title="View" class="fa-solid fa-eye text-primary"></i>
-                  </span>
-                  <div class="dot-separator mx-2"></div>
-                  <span data-bs-toggle="modal" data-bs-target="#delete-{{forloop.counter}}">
-                    <i title="Delete" class="fa-solid fa-trash text-danger"></i>
-                  </span>
+        {% if messages %}
+            {% for message in messages %}
+                {#                {% if message.tags == 'file_upload' %}#}
+                <div class="alert alert-warning alert-dismissible fade show col-6 d-flex align-items-center"
+                     role="alert">
+                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img"
+                         aria-label="Warning:">
+                        <use xlink:href="#exclamation-triangle-fill"/>
+                    </svg>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                            aria-label="Close"></button>
                 </div>
-              </td>
-            </tr>
-            <!-- Modal -->
-            <div class="modal fade" id="file-{{forloop.counter}}" data-bs-backdrop="static" data-bs-keyboard="false"
-              tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered modal-xl">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">{{ file.filename }}</h1>
-                    <span>
-                      <a href="{% url 'dashboard:download_file' file.file|encoded_file_path %}">
+                {#                {% endif %}#}
+            {% endfor %}
+        {% endif %}
+        <div class="d-flex justify-content-start mb-3">
+            <label for="fileInput">
+                <i class="fa-solid fa-upload text-primary fs-3"></i>
+            </label>
+            <form method="post" action="{% url 'dashboard:upload_file' %}" id="upload-file"
+                  enctype="multipart/form-data">
+                {% csrf_token %}
+                {#                <input type="hidden" name="directory" value="{{ selected_directory }}">#}
+                <input id="fileInput" class="d-none" onchange="submitForm()" type="file" name="file" required>
+            </form>
+        </div>
+        {% if files %}
+            {{ files|length|json_script:"files-count" }}
+            <div class="table-responsive">
+                <table class="table">
+                    <tr>
+                        <th scope="col">File Name</th>
+                        <th scope="col">File Type</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+
+                    {% if request.GET.show_modal == 'True' %}
+                        {% if request.GET.file_id %}
+                            <style>
+                                /* Modal styles */
+                                .modal {
+                                    display: none; /* Hidden by default */
+                                    position: fixed;
+                                    z-index: 1;
+                                    left: 0;
+                                    top: 0;
+                                    width: 100%;
+                                    height: 100%;
+                                    overflow: auto;
+                                    background-color: rgb(0, 0, 0);
+                                    background-color: rgba(0, 0, 0, 0.4);
+                                    padding-top: 60px;
+                                }
+
+                                .modal-content {
+                                    background-color: #fefefe;
+                                    margin: 5% auto;
+                                    padding: 20px;
+                                    border: 1px solid #888;
+                                    width: 80%;
+                                }
+
+                                .close {
+                                    color: #aaa;
+                                    float: right;
+                                    font-size: 28px;
+                                    font-weight: bold;
+                                }
+
+                                .close:hover,
+                                .close:focus {
+                                    color: black;
+                                    text-decoration: none;
+                                    cursor: pointer;
+                                }
+                            </style>
+                            <div id="myModal" class="modal">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5">File
+                                                Info ({{ request.GET.file_id|basename }})</h1>
+{#                                            <div#}
+{#                                                    data-bs-dismiss="modal" aria-label="Close">#}
+{#                                                <i class="fa-solid fa-circle-xmark fs-5"></i>#}
+{#                                            </div>#}
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{% url 'dashboard:save_info' request.GET.file_id %}"
+                                                  method="post">
+                                                {% csrf_token %}
+                                                <div class="form-group mb-2">
+                                                    <label for="" class="form-label">Title</label>
+                                                    <input type="text"
+                                                           placeholder="{{ request.GET.file_id|title_value }}"
+                                                           name="title"
+                                                           class="form-control" required>
+                                                </div>
+                                                <div class="form-group mb-2">
+                                                    <label for="" class="form-label">Course</label>
+                                                    <input type="text"
+                                                           placeholder="{{ request.GET.file_id|course_value }}"
+                                                           name="course"
+                                                           class="form-control" required>
+                                                </div>
+                                                <div class="form-group mb-2">
+                                                    <label for="" class="form-label">Subject</label>
+                                                    <input type="text"
+                                                           placeholder="{{ request.GET.file_id|subject_value }}"
+                                                           name="subject"
+                                                           class="form-control" required>
+                                                </div>
+                                                <div class="form-group mb-2">
+                                                    <label for="" class="form-label">Document Type</label>
+                                                    <input type="text"
+                                                           placeholder="{{ request.GET.file_id|doctype_value }}"
+                                                           name="doctype"
+                                                           class="form-control" required>
+                                                </div>
+                                                <div class="form-group mb-2">
+                                                    <label for="" class="form-label">University</label>
+                                                    <input type="text"
+                                                           placeholder="{{ request.GET.file_id|uni_value }}"
+                                                           name="uni"
+                                                           class="form-control" required>
+                                                </div>
+                                                <div class="form-group mb-2">
+                                                    <label for="" class="form-label">File Info</label>
+                                                    <input type="text"
+                                                           placeholder="{{ request.GET.file_id|info_value }}"
+                                                           name="info" id="" class="form-control" required>
+                                                </div>
+                                                <div class="d-flex justify-content-end">
+                                                    <button type="submit" class="btn btn-primary"
+                                                            data-bs-dismiss="modal">Save
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <script>
+                                // JavaScript to control modal display
+                                window.onload = function () {
+                                    var urlParams = new URLSearchParams(window.location.search);
+                                    if (urlParams.get('file_id')) {
+                                        var modal = document.getElementById('myModal');
+                                        modal.style.display = "block";  // Display the modal
+                                    }
+
+                                    // Close modal when close button is clicked
+                                    var closeBtn = document.getElementsByClassName("close")[0];
+                                    closeBtn.onclick = function () {
+                                        modal.style.display = "none";
+                                    }
+                                }
+                            </script>
+                        {% endif %}
+                    {% endif %}
+                    {% for file in files %}
+                        <tr data-bs-toggle="tooltip" title="{{ file.id|title_value }}">
+                            <td>
+                                        <span>
+                                            {{ file.id|display_value }}
+{#                                            {{ file.file_field.name }}#}
+                                        </span>
+                            </td>
+                            <td>
+                                {{ file.file_field.name|file_extension|cut:"."|upper }}
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center actions">
+                                            <span data-bs-toggle="modal" data-bs-target="#info-{{ forloop.counter }}">
+                                                <i title="Info" class="fa-solid fa-info text-success"></i>
+                                            </span>
+                                    <div class="dot-separator mx-2">
+                                    </div>
+                                    <span data-bs-toggle="modal" data-bs-target="#file-{{ forloop.counter }}">
+                                                <i title="View" class="fa-solid fa-eye text-primary"></i>
+                                            </span>
+                                    <div class="dot-separator mx-2"></div>
+                                    <span data-bs-toggle="modal" data-bs-target="#delete-{{ forloop.counter }}">
+                                                <i title="Delete" class="fa-solid fa-trash text-danger"></i>
+                                            </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- Modal -->
+                        <div class="modal fade" id="file-{{ forloop.counter }}" data-bs-backdrop="static"
+                             data-bs-keyboard="false"
+                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5"
+                                            id="staticBackdropLabel">{{ file.file_field.name }}</h1>
+                                        <span>
+                      <a href="{% url 'dashboard:download_file' file.id %}">
                         <i title="Download" class="fa-solid fa-download text-success fs-4"></i>
                       </a>
                     </span>
-                    <div class="" id="modal-close-btn-{{forloop.counter}}" data-bs-dismiss="modal" aria-label="Close">
-                      <i class="fa-solid fa-circle-xmark fs-5"></i>
-                    </div>
-                  </div>
-                  <div class="modal-body">
-                    {% if file.filename|file_extension in ".jpg, .png, .gif" %}
-                      <img height="700px" class="w-100" src="/media/{{ file.file }}" alt="df">
-                    {% elif file.filename|file_extension in ".mp4, .webm, .ogg" %}
-                      <video class="w-100" height="700" controls>
-                        <source src="/media/{{ file.file }}" type="video/mp4">
-                      </video>
-                    {% elif file.filename|file_extension in ".pdf, .txt" %}
-                      <iframe src="/media/{{ file.file }}" width="100%" height="700px"></iframe>
-                    {% elif file.filename|file_extension in ".csv" %}
-                      <pre class="bg-dark text-light p-3">{{ file.csv_text }}</pre>
-                    {% endif %}
-                  </div>
-                </div>
-              </div>
+                                        <div class="" id="modal-close-btn-{{ forloop.counter }}"
+                                             data-bs-dismiss="modal" aria-label="Close">
+                                            <i class="fa-solid fa-circle-xmark fs-5"></i>
+                                        </div>
+                                    </div>
+                                    <div class="modal-body">
+                                        <iframe src="/media/{{ file.file_field.name }}" width="100%"
+                                                height="700px"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Delete Modal -->
+                        <div class="modal fade" id="delete-{{ forloop.counter }}" tabindex="-1"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Delete File</h1>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{ file.file_field.name }}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <form id="delete-form-{{ forloop.counter }}"
+                                              action="{% url 'dashboard:delete_file' file.id %}"
+                                              method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="delete_confirmation" value="true">
+                                            <a class="btn btn-danger" href="#"
+                                               onclick="document.getElementById('delete-form-{{ forloop.counter }}').submit(); return false;">Delete</a>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Info Modal -->
+                        <div class="modal fade" id="info-{{ forloop.counter }}" tabindex="-1"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">File Info</h1>
+                                        <div class="" id="modal-close-btn-{{ forloop.counter }}"
+                                             data-bs-dismiss="modal" aria-label="Close">
+                                            <i class="fa-solid fa-circle-xmark fs-5"></i>
+                                        </div>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{% url 'dashboard:save_info' file.id %}"
+                                              method="post">
+                                            {% csrf_token %}
+                                            <div class="form-group mb-2">
+                                                <label for="" class="form-label">Title</label>
+                                                <input type="text" value="{{ file.id|title_value }}"
+                                                       name="title"
+                                                       class="form-control">
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label for="" class="form-label">Course</label>
+                                                <input type="text" value="{{ file.id|course_value }}"
+                                                       name="course"
+                                                       class="form-control">
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label for="" class="form-label">Subject</label>
+                                                <input type="text" value="{{ file.id|subject_value }}"
+                                                       name="subject"
+                                                       class="form-control">
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label for="" class="form-label">Document Type</label>
+                                                <input type="text" value="{{ file.id|doctype_value }}"
+                                                       name="doctype"
+                                                       class="form-control">
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label for="" class="form-label">University</label>
+                                                <input type="text" value="{{ file.id|uni_value }}"
+                                                       name="uni"
+                                                       class="form-control">
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label for="" class="form-label">File Info</label>
+                                                <input type="text" value="{{ file.id|info_value }}"
+                                                       name="info" id="" class="form-control">
+                                            </div>
+                                            <div class="d-flex justify-content-end">
+                                                <button type="submit" class="btn btn-primary"
+                                                        data-bs-dismiss="modal">Save
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </table>
             </div>
-            <!-- Delete Modal -->
-            <div class="modal fade" id="delete-{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Delete File</h1>
-                  </div>
-                  <div class="modal-body">
-                    {{file.filename}}
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <a class="btn btn-danger" href="{% url 'dashboard:delete_file' file.file|encoded_file_path %}">Delete</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- Info Modal -->
-            <div class="modal fade" id="info-{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">File Info</h1>
-                    <div class="" id="modal-close-btn-{{forloop.counter}}" data-bs-dismiss="modal" aria-label="Close">
-                      <i class="fa-solid fa-circle-xmark fs-5"></i>
-                    </div>
-                  </div>
-                  <div class="modal-body">
-                    <form action="{% url 'dashboard:save_info' file.file_path|encoded_file_path %}" method="post">
-                      {% csrf_token %}
-                      <div class="form-group mb-2">
-                        <label for="" class="form-label">File Info</label>
-                        <input type="text" value="{{file.file_path|info_value}}" name="info" id="" class="form-control">
-                      </div>
-                      <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {% endfor %}
-          </table>
-        </div>
-      {% else %}
-        <p>No files</p>
-      {% endif %}
+        {% else %}
+            <p>No files</p>
+        {% endif %}
     </div>
-  </div>
 
-</div>
-{% endblock content %}
+{% endblock %}
 
 {% block extrascripts %}
 
-<script>
-  function submitForm() {
-    document.getElementById("upload-file").submit();
-  }
-  
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' || event.key === 'Esc' || event.key === 27) {
-      let files = document.getElementById('files-count').textContent;
-      for (let i = 1; i <= files; i++) {
-        let closeButtonElements = document.getElementById(`modal-close-btn-${i}`);
-        closeButtonElements.click();
-      }
-    }
-  })
-</script>
+    <script>
+        function submitForm() {
+            document.getElementById("upload-file").submit();
+        }
 
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' || event.key === 'Esc' || event.key === 27) {
+                let files = document.getElementById('files-count').textContent;
+                for (let i = 1; i <= files; i++) {
+                    let closeButtonElements = document.getElementById(`modal-close-btn-${i}`);
+                    closeButtonElements.click();
+                }
+            }
+        })
+
+    </script>
 {% endblock extrascripts %}

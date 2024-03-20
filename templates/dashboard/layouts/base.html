@@ -54,6 +54,14 @@
         }
         Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
+    var mode = button.getAttribute("data-class");
+        var logo = document.getElementById("logoo");
+
+        if (mode === "bg-slate-900") {
+            logo.src = "{% static 'images/logo_NotesShare.png' %}";
+        } else if (mode === "bg-white") {
+            logo.src = "{% static 'images/logo_NotesShare_dark_1.png' %}";
+        }
 </script>
 <!-- Github buttons -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
