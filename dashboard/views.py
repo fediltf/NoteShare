@@ -1,3 +1,4 @@
+import base64
 import hashlib
 import os
 import pickle
@@ -8,10 +9,13 @@ import csv
 import pdfplumber
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+from django.core.files import File
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, FileResponse, Http404, HttpResponseBadRequest, HttpResponseRedirect
 from django.conf import settings
 from dashboard.models import Document, Shingle
+
 
 
 # Create your views here.
@@ -128,51 +132,78 @@ def upload_file(request):
     if request.method == 'POST':
         user = request.user
         file = request.FILES.get('file')
+
+        # Validate file type
         if not file.name.endswith('.pdf'):
             messages.warning(request, 'Only PDF files are allowed.', extra_tags='file_upload')
-        else:
-            show_modal = True
+            return redirect(request.META.get('HTTP_REFERER'))
+
+        try:
             file_path = os.path.join(media_path, file.name)
             with open(file_path, 'wb+') as destination:
                 for chunk in file.chunks():
                     destination.write(chunk)
-            text = extract_text_ocr(file_path)
-            shingles = create_shingles(text)  # Define this function
-            pickled_shingles = pickle.dumps(shingles)
-            document = Document.objects.create(user=user, file_field=file, text=text)
-            Shingle.objects.create(document=document, pickled_shingles=pickled_shingles)
-            # print(pickle.loads(pickled_shingles))
-            #
-            # existing_documents = Document.objects.all()
-            # if existing_documents.exists():
-            #     for ex_doc in existing_documents:
-            #         # Calculate Jaccard similarity coefficient between shingles
-            #         p_sh = ex_doc.get_pickled_shingles().encode('latin1')
-            #         existing_shingles = pickle.loads(p_sh)
-            #         similarity_score = calculate_similarity(shingles, existing_shingles)
-            #         jaccard_similarity = similarity_score(shingles, existing_shingles)
-            #         threshold = 0.8
-            #         if jaccard_similarity >= threshold:
-            #             messages.warning(request, 'File is too similar to an existing file.')
-            #             return redirect(request.META.get('HTTP_REFERER'))
 
-            messages.success(request, 'File uploaded successfully. Please enter file information to get your points ;)',
+            # Extract text using OCR
+            text, output_path = extract_text_ocr(file_path)
+            shingles = create_shingles(text)
+            pickled_shingles = pickle.dumps(shingles)
+
+            # Encode the pickled data to a base64 string
+            b64_pickled_shingles = base64.b64encode(pickled_shingles).decode()
+            existing_documents = Document.objects.all()
+            if is_duplicate(user, shingles):
+                messages.warning(request, 'File is too similar to an existing file.')
+                return redirect(request.META.get('HTTP_REFERER'))
+
+            # Create Document and Shingle objects
+            document = Document.objects.create(user=user, file_field=file, text=text)
+            Shingle.objects.create(document=document, pickled_shingles=b64_pickled_shingles)
+            # Success message and redirection logic
+            messages.success(request,
+                             'File uploaded successfully. Please enter file information to get your points ;)',
                              extra_tags='file_upload')
-            show_modal = True
-            redirect_url = f"{request.META.get('HTTP_REFERER')}?show_modal={show_modal}&file_id={document.id}"
+            redirect_url = f"{request.META.get('HTTP_REFERER')}?file_id={document.id}"
             return HttpResponseRedirect(redirect_url)
+
+        except ValidationError as e:
+            messages.error(request, str(e))  # Handle validation errors
+            return redirect(request.META.get('HTTP_REFERER'))
+
+        # except Exception as e:  # Catch generic exceptions
+        #     print(f"Error uploading file: {e}")
+        #     messages.error(request, 'An error occurred during upload. Please try again.')
+        #     return redirect(request.META.get('HTTP_REFERER'))
 
     return redirect(request.META.get('HTTP_REFERER'))
 
 
 def extract_text_ocr(upload_path):
-    output_path = f"media/temp/output.txt"
-    subprocess.run(["ocrmypdf", upload_path, output_path], check=True)
+    file_name = upload_path.split('\\')[-1].replace('.pdf', '')+'_ocr.pdf'
+    # output_path = f"media/temp/{file_name}.txt"
+    media_path = os.path.join(settings.MEDIA_ROOT)
+    output_path = os.path.join(media_path, file_name)
+    subprocess.run(["ocrmypdf", '--force-ocr', upload_path, output_path], check=True)
     text = ''
     with pdfplumber.open(output_path) as pdf:
         for page in pdf.pages:
             text += page.extract_text(x_tolerance=2)
-    return text
+    return text, output_path
+
+
+def is_duplicate(user, shingles):
+    existing_documents = Document.objects.all()
+    if existing_documents.exists():
+        for ex_doc in existing_documents:
+            p_sh = ex_doc.get_pickled_shingles()
+            existing_shingles = pickle.loads(p_sh)
+            # Calculate Jaccard similarity coefficient between shingles
+            similarity_score = calculate_similarity(shingles, existing_shingles)
+            print(similarity_score)
+            threshold = 0.6
+            if similarity_score >= threshold:
+                return True
+    return False
 
 
 def create_shingles(text, k=3):

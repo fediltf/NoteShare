@@ -94,7 +94,7 @@
                         <th scope="col">Actions</th>
                     </tr>
 
-                    {% if request.GET.show_modal == 'True' %}
+                    
                         {% if request.GET.file_id %}
                             <style>
                                 /* Modal styles */
@@ -217,7 +217,7 @@
                                 }
                             </script>
                         {% endif %}
-                    {% endif %}
+                    
                     {% for file in files %}
                         <tr data-bs-toggle="tooltip" title="{{ file.id|title_value }}">
                             <td>
