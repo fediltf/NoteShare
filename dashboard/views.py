@@ -1,24 +1,34 @@
 import base64
 import hashlib
+import re
+import nltk
+import numpy as np
 import os
+import pdfplumber
 import pickle
 import subprocess
 import uuid
-import csv
-
-import pdfplumber
+from collections import Counter
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.core.files import File
+from django.db.models import Q
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, FileResponse, Http404, HttpResponseBadRequest, HttpResponseRedirect
-from django.conf import settings
 from dashboard.models import Document, Shingle
+from langdetect import detect
+from nltk.stem import WordNetLemmatizer
+from nltk.corpus import stopwords
+from sklearn.feature_extraction.text import TfidfVectorizer
+from elasticsearch import Elasticsearch
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('wordnet')
+nltk.download('averaged_perceptron_tagger')
 
-
-# Create your views here.
 
 def index(request):
     context = {}
@@ -132,11 +142,17 @@ def upload_file(request):
     if request.method == 'POST':
         user = request.user
         file = request.FILES.get('file')
+        info = request.POST.get('info')
+        title = request.POST.get('title')
+        course = request.POST.get('course')
+        subject = request.POST.get('subject')
+        doctype = request.POST.get('doctype')
+        uni = request.POST.get('uni')
 
         # Validate file type
-        if not file.name.endswith('.pdf'):
-            messages.warning(request, 'Only PDF files are allowed.', extra_tags='file_upload')
-            return redirect(request.META.get('HTTP_REFERER'))
+        # if not file.name.endswith('.pdf'):
+        #     messages.warning(request, 'Only PDF files are allowed.', extra_tags='file_upload')
+        #     return redirect(request.META.get('HTTP_REFERER'))
 
         try:
             file_path = os.path.join(media_path, file.name)
@@ -148,6 +164,8 @@ def upload_file(request):
             text, output_path = extract_text_ocr(file_path)
             shingles = create_shingles(text)
             pickled_shingles = pickle.dumps(shingles)
+            keywords = get_keywords(text)
+            lang = detect(text)
 
             # Encode the pickled data to a base64 string
             b64_pickled_shingles = base64.b64encode(pickled_shingles).decode()
@@ -157,7 +175,9 @@ def upload_file(request):
                 return redirect(request.META.get('HTTP_REFERER'))
 
             # Create Document and Shingle objects
-            document = Document.objects.create(user=user, file_field=file, text=text)
+            document = Document.objects.create(user=user, file_field=file, info=info, title=title, course=course,
+                                               subject=subject, doctype=doctype, uni=uni, text=text, lang=lang,
+                                               keywords=keywords)
             Shingle.objects.create(document=document, pickled_shingles=b64_pickled_shingles)
             # Success message and redirection logic
             messages.success(request,
@@ -179,11 +199,11 @@ def upload_file(request):
 
 
 def extract_text_ocr(upload_path):
-    file_name = upload_path.split('\\')[-1].replace('.pdf', '')+'_ocr.pdf'
+    file_name = upload_path.split('\\')[-1].replace('.pdf', '') + '_ocr.pdf'
     # output_path = f"media/temp/{file_name}.txt"
     media_path = os.path.join(settings.MEDIA_ROOT)
     output_path = os.path.join(media_path, file_name)
-    subprocess.run(["ocrmypdf", '--force-ocr', upload_path, output_path], check=True)
+    subprocess.run(["ocrmypdf", "--output-type", "pdf", '--skip-text', upload_path, output_path], check=True)
     text = ''
     with pdfplumber.open(output_path) as pdf:
         for page in pdf.pages:
@@ -196,6 +216,7 @@ def is_duplicate(user, shingles):
     if existing_documents.exists():
         for ex_doc in existing_documents:
             p_sh = ex_doc.get_pickled_shingles()
+            print(p_sh)
             existing_shingles = pickle.loads(p_sh)
             # Calculate Jaccard similarity coefficient between shingles
             similarity_score = calculate_similarity(shingles, existing_shingles)
@@ -224,3 +245,46 @@ def create_shingles(text, k=3):
 def calculate_similarity(shingles1, shingles2):
     jaccard_similarity = len(shingles1.intersection(shingles2)) / len(shingles1.union(shingles2))
     return jaccard_similarity
+
+
+def get_keywords(text):
+    # Remove symbols using regular expression
+    text = re.sub(r'[^a-zA-Z\s]', '', text)
+    tokens = nltk.word_tokenize(text)
+    lower_tokens = [token.lower() for token in tokens]
+    stop_words = set(stopwords.words('english'))
+    filtered_tokens = [token for token in lower_tokens if token not in stop_words]
+    tagged_tokens = nltk.pos_tag(filtered_tokens)
+    refiltered_tokens = [token for token, tag in tagged_tokens if tag in ['NN', 'VB', 'JJ', 'RB']]
+    lemmatizer = WordNetLemmatizer()
+    lemmatized_tokens = [lemmatizer.lemmatize(token) for token in refiltered_tokens]
+    word_counts = Counter(lemmatized_tokens)
+    top_keywords = word_counts.most_common(50)  # Extract top 10 most frequent words
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform([text])
+    retop_keywords = vectorizer.get_feature_names_out()[
+        np.argsort(tfidf_matrix.toarray())[0][-10:]]  # Get top 10 TF-IDF words
+
+    print("Top Keywords:")
+    joined_kw = ""
+    for keyword, count in top_keywords:
+        print(f"- {keyword} ({count})")
+        joined_kw += keyword + " "
+    print(retop_keywords)
+    return joined_kw
+
+
+def search(request):
+    query = request.GET.get('query')
+    if query:
+        vector = SearchVector(('title', 'C'), ('keywords', 'B'), ('info', 'B'), ('subject', 'B'))
+        q = SearchQuery(vector)
+        files = Document.objects.filter(
+            Q(title__icontains=query) | Q(info__icontains=query) | Q(subject__icontains=query) | Q(
+                keywords__icontains=query)
+        )
+    else:
+        files = []
+    context = {'files': files}
+
+    return render(request, 'dashboard/pages/search.html', context)

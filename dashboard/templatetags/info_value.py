@@ -1,5 +1,8 @@
 import os
+
+import pdfplumber
 from django import template
+from django.conf import settings
 from dashboard.models import Document
 
 register = template.Library()
@@ -68,3 +71,15 @@ def display_value(document_id):
         return file_info.first().file_field.name
     else:
         return ""
+
+@register.filter
+def file_img(document_id):
+    # return os.path.basename(path)
+    file_info = Document.objects.filter(id=document_id)
+    if file_info.exists():
+        name = file_info.first().file_field.name
+        fp= os.path.join(settings.MEDIA_ROOT, name)
+        with pdfplumber.open(fp) as pdf:
+            first_page = pdf.pages[0]
+            images = first_page.images
+        return images
