@@ -14,4 +14,7 @@ urlpatterns = [
                   path('upload-file/', views.upload_file, name='upload_file'),
                   path('save-info/<str:document_id>/', views.save_info, name='save_info'),
                   path('search/', views.search, name='search'),
+                  path('wallet/', views.wallet, name='wallet'),
+                  path('first_page_preview/<int:document_id>/', views.first_page_preview, name='first_page_preview'),
+                  # path('restricted_pdf/<int:document_id>/', views.restricted_pdf_view, name='restricted_pdf_view'),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

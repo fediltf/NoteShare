@@ -166,3 +166,5 @@ ELASTICSEARCH_DSL={
         'hosts': 'https://localhost:9200',
     }
 }
+
+# AUTH_USER_MODEL = 'dashboard.Student'

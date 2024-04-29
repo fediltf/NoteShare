@@ -4,8 +4,8 @@ import os
 import pickle
 from django.contrib.auth.models import User
 from django.db import models
-from django.contrib.auth.models import User
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 def user_directory_path(instance, filename):
@@ -16,10 +16,21 @@ def filename(instance, filename):
     return filename
 
 
+class Student(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    points_field = models.IntegerField(default=0)
 
+    def __str__(self):
+        return f"{self.user.username}"
+
+@receiver(post_save, sender=User)
+def create_student(sender, instance, created, **kwargs):
+    if created:  # Check if a new user is being created
+        Student.objects.create(user=instance)
 
 class Document(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(Student, on_delete=models.CASCADE)
+    upload_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     file_field = models.FileField(unique=True, upload_to=filename)
     info = models.CharField(max_length=255, null=True, blank=True)
     title = models.CharField(max_length=100, null=False, blank=False)

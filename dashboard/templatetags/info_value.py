@@ -1,9 +1,11 @@
 import os
-
 import pdfplumber
 from django import template
 from django.conf import settings
 from dashboard.models import Document
+from PyPDF2 import PdfReader, PdfWriter
+from io import BytesIO
+
 
 register = template.Library()
 
@@ -83,3 +85,22 @@ def file_img(document_id):
             first_page = pdf.pages[0]
             images = first_page.images
         return images
+
+@register.filter
+def nb_pages(document_id):
+    file_info = Document.objects.filter(id=document_id)
+    if file_info.exists():
+        name = file_info.first().file_field.name
+        fp = os.path.join(settings.MEDIA_ROOT, name)
+        with pdfplumber.open(fp) as pdf:
+            nb= len(pdf.pages)
+        return nb
+    return 0
+
+@register.filter
+def restricted_pdf(document_id):
+    document = Document.objects.filter(id=document_id).first()
+    if document:
+        name = document.file_field.name
+        p_name = os.path.splitext(name)[0]
+        return f'/media/{p_name}_restricted.pdf'

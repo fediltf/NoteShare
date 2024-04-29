@@ -1,28 +1,32 @@
 import base64
 import hashlib
-import re
 import nltk
 import numpy as np
 import os
 import pdfplumber
 import pickle
+import re
 import subprocess
 import uuid
 from collections import Counter
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from dashboard.models import Document, Shingle
+from io import BytesIO
 from langdetect import detect
-from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+from PyPDF2 import PdfReader, PdfWriter
+from dashboard.models import Document, Shingle
 from sklearn.feature_extraction.text import TfidfVectorizer
-from elasticsearch import Elasticsearch
-from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from PIL import Image, ImageFilter
+import fitz
+from django.core.files.storage import default_storage
 
 nltk.download('stopwords')
 nltk.download('punkt')
@@ -88,7 +92,7 @@ def file_manager(request, directory=''):
     if user.is_superuser:
         files = Document.objects.all()
     else:
-        files = Document.objects.filter(user=user)
+        files = Document.objects.filter(user=user.student)
 
     breadcrumbs = get_breadcrumbs(request)
 
@@ -98,6 +102,16 @@ def file_manager(request, directory=''):
         'breadcrumbs': breadcrumbs
     }
     return render(request, 'dashboard/pages/file-manager.html', context)
+
+
+@login_required
+def wallet(request):
+    user = request.user.student
+    points = user.points_field
+    context = {
+        'points': points,
+    }
+    return render(request, 'dashboard/pages/wallet.html', context)
 
 
 def generate_nested_directory(root_path, current_path):
@@ -140,7 +154,7 @@ def upload_file(request):
     media_path = os.path.join(settings.MEDIA_ROOT)
 
     if request.method == 'POST':
-        user = request.user
+        user = request.user.student
         file = request.FILES.get('file')
         info = request.POST.get('info')
         title = request.POST.get('title')
@@ -166,7 +180,9 @@ def upload_file(request):
             pickled_shingles = pickle.dumps(shingles)
             keywords = get_keywords(text)
             lang = detect(text)
-
+            length = len(text)
+            points_per_unit = 500
+            awarded_points = length // points_per_unit
             # Encode the pickled data to a base64 string
             b64_pickled_shingles = base64.b64encode(pickled_shingles).decode()
             existing_documents = Document.objects.all()
@@ -178,13 +194,16 @@ def upload_file(request):
             document = Document.objects.create(user=user, file_field=file, info=info, title=title, course=course,
                                                subject=subject, doctype=doctype, uni=uni, text=text, lang=lang,
                                                keywords=keywords)
+            student = document.user
+            student.points_field += awarded_points
+            student.save()
+
             Shingle.objects.create(document=document, pickled_shingles=b64_pickled_shingles)
             # Success message and redirection logic
             messages.success(request,
-                             'File uploaded successfully. Please enter file information to get your points ;)',
+                             f'File uploaded successfully! {awarded_points} points gained',
                              extra_tags='file_upload')
-            redirect_url = f"{request.META.get('HTTP_REFERER')}?file_id={document.id}"
-            return HttpResponseRedirect(redirect_url)
+            return redirect(request.META.get('HTTP_REFERER'))
 
         except ValidationError as e:
             messages.error(request, str(e))  # Handle validation errors
@@ -216,7 +235,6 @@ def is_duplicate(user, shingles):
     if existing_documents.exists():
         for ex_doc in existing_documents:
             p_sh = ex_doc.get_pickled_shingles()
-            print(p_sh)
             existing_shingles = pickle.loads(p_sh)
             # Calculate Jaccard similarity coefficient between shingles
             similarity_score = calculate_similarity(shingles, existing_shingles)
@@ -260,17 +278,12 @@ def get_keywords(text):
     lemmatized_tokens = [lemmatizer.lemmatize(token) for token in refiltered_tokens]
     word_counts = Counter(lemmatized_tokens)
     top_keywords = word_counts.most_common(50)  # Extract top 10 most frequent words
-    vectorizer = TfidfVectorizer()
-    tfidf_matrix = vectorizer.fit_transform([text])
-    retop_keywords = vectorizer.get_feature_names_out()[
-        np.argsort(tfidf_matrix.toarray())[0][-10:]]  # Get top 10 TF-IDF words
 
     print("Top Keywords:")
     joined_kw = ""
     for keyword, count in top_keywords:
         print(f"- {keyword} ({count})")
         joined_kw += keyword + " "
-    print(retop_keywords)
     return joined_kw
 
 
@@ -283,8 +296,67 @@ def search(request):
             Q(title__icontains=query) | Q(info__icontains=query) | Q(subject__icontains=query) | Q(
                 keywords__icontains=query)
         )
+        for file in files:
+            restricted_pdf_view(request, file)
     else:
         files = []
-    context = {'files': files}
+    context = {'files': files, 'query': query}
 
     return render(request, 'dashboard/pages/search.html', context)
+
+
+def first_page_preview(request, document_id):
+    # Fetch document object
+    document = Document.objects.get(pk=document_id)
+    name = document.file_field.name
+    fp = os.path.join(settings.MEDIA_ROOT, name)
+    with pdfplumber.open(fp) as pdf:
+        first_page = pdf.pages[0]
+        # Convert the PDF page to an image
+        image = first_page.to_image(resolution=150)  # Adjust resolution as needed
+
+        # Convert the image to PNG format
+        image = image.original.convert('RGB')
+
+        # Save the image to a BytesIO buffer
+        buffer = BytesIO()
+        image.save(buffer, format='PNG')
+
+        # Return the image as an HttpResponse with content type image/png
+        return HttpResponse(buffer.getvalue(), content_type='image/png')
+
+
+def restricted_pdf_view(request, document):
+    name = document.file_field.name
+    fp = os.path.join(settings.MEDIA_ROOT, name)
+    p_name = os.path.splitext(name)[0]
+    restricted_pdf = generate_restricted_preview(fp)
+    if restricted_pdf:
+        restricted_pdf_path = os.path.join(settings.MEDIA_ROOT, f'{p_name}_restricted.pdf')
+        # Save the restricted PDF to the media folder
+        with open(restricted_pdf_path, 'wb') as f:
+            f.write(restricted_pdf)
+
+
+def generate_restricted_preview(fp):
+    try:
+        original_pdf_reader = PdfReader(fp)
+        total_pages = len(original_pdf_reader.pages)
+        if total_pages >= 10:
+            num_pages_allowed = 3
+        elif total_pages >= 5:
+            num_pages_allowed = 2
+        else:
+            num_pages_allowed = 1
+
+        preview_pdf = BytesIO()
+        writer = PdfWriter()
+        for page_num in range(total_pages):
+            page = original_pdf_reader.pages[page_num]
+            if page_num < num_pages_allowed:
+                writer.add_page(page)
+        writer.write(preview_pdf)
+        return preview_pdf.getvalue()
+    except Exception as e:
+        print(f"Error generating restricted preview: {e}")
+        return None
