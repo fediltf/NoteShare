@@ -40,7 +40,8 @@ class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     date_joined = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     points_field = models.IntegerField(default=0)
-    interests = models.ManyToManyField(Topic, null=True, blank=True)
+    interests = models.ManyToManyField(Topic)
+    school = models.ForeignKey(School, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f"{self.user.username}"
@@ -55,10 +56,10 @@ class Document(models.Model):
     user = models.ForeignKey(Student, on_delete=models.CASCADE)
     upload_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     file_field = models.FileField(unique=True, upload_to=filename)
-    info = models.CharField(max_length=255, null=True, blank=True)
+    info = models.TextField(max_length=255, null=True, blank=True)
     title = models.CharField(max_length=100, null=False, blank=False)
-    course = models.CharField(max_length=100, null=False, blank=False)
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, blank=True, null=True)
+    # course = models.CharField(max_length=100, null=False, blank=False)
+    course = models.ForeignKey(Topic, on_delete=models.CASCADE, blank=True, null=True)
     doctype = models.ForeignKey(Doctype, on_delete=models.CASCADE, blank=True, null=True)
     uni = models.ForeignKey(School, on_delete=models.CASCADE, blank=True, null=True)
     text = models.TextField(null=True, blank=True)

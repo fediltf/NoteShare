@@ -180,18 +180,18 @@
                                             <td class="align-middle">
                                                 <div class="d-flex align-items-center actions">
                                             <span data-bs-toggle="modal" data-bs-target="#info-{{ forloop.counter }}">
-                                                <i title="Info" class="fa-solid fa-info text-success"></i>
+                                                <i title="Info" class="fa fa-duotone fa-info text-success"></i>
                                             </span>
                                                     <div class="dot-separator mx-2">
                                                     </div>
                                                     <span data-bs-toggle="modal"
                                                           data-bs-target="#file-{{ forloop.counter }}">
-                                                      <i title="View" class="fa-solid fa-eye text-primary"></i>
+                                                      <i title="View" class="fa fa-duotone fa-eye text-primary"></i>
                                             </span>
                                                     <div class="dot-separator mx-2"></div>
                                                     <span data-bs-toggle="modal"
                                                           data-bs-target="#delete-{{ forloop.counter }}">
-                                                <i title="Delete" class="fa-solid fa-trash text-danger"></i>
+                                                <i title="Delete" class="fa fa-solid fa-trash text-danger"></i>
                                             </span>
                                                 </div>
                                             </td>
@@ -205,10 +205,10 @@
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h1 class="modal-title fs-5"
-                                                            id="staticBackdropLabel">{{ file.file_field.name }}</h1>
+                                                            id="staticBackdropLabel">{{ file.id | display_value }}</h1>
                                                         <span>
                                               <a href="{% url 'dashboard:download_file' file.id %}">
-                                                <i title="Download" class="fa-solid fa-download text-success fs-4"></i>
+                                                <i title="Download" class="fa fa-solid fa-download text-success fs-4"></i>
                                               </a>
                                             </span>
                                                         <div class="" id="modal-close-btn-{{ forloop.counter }}"
@@ -282,12 +282,12 @@
                                                                        name="course"
                                                                        class="form-control">
                                                             </div>
-                                                            <div class="form-group mb-2">
-                                                                <label for="" class="form-label">Subject</label>
-                                                                <input type="text" value="{{ file.id|subject_value }}"
-                                                                       name="subject"
-                                                                       class="form-control">
-                                                            </div>
+{#                                                            <div class="form-group mb-2">#}
+{#                                                                <label for="" class="form-label">Subject</label>#}
+{#                                                                <input type="text" value="{{ file.id|subject_value }}"#}
+{#                                                                       name="subject"#}
+{#                                                                       class="form-control">#}
+{#                                                            </div>#}
                                                             <div class="form-group mb-2">
                                                                 <label for="" class="form-label">Document Type</label>
                                                                 <input type="text" value="{{ file.id|doctype_value }}"
@@ -355,42 +355,42 @@
                             <label for="" class="form-label">Title</label>
                             <input type="text"
                                    name="title"
-                                   class="form-control" required>
+                                   class="form-control fw-lighter text-sm fst-italic"  placeholder="Enter Document Title.." required>
                         </div>
                         <div class="form-group mb-2">
-                            <label for="" class="form-label">Course</label>
-                            <input type="text"
-                                   name="course"
-                                   class="form-control" required>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="" class="form-label">Subject</label>
-                            <input type="text"
-                                   name="subject"
-                                   class="form-control" required>
+                            <label class="form-label" for="doctype">Course</label>
+                            <select class="form-select font-weight-light font-italic text-sm" id="course"
+                                    name="course" required>
+                                <option selected>Select Course..</option>
+                                {% for topic in topics %}
+                                    <option value={{ topic.id }}>{{ topic.name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="form-group mb-2">
                             <label class="form-label" for="doctype">Document Type</label>
-                            <select class="form-select font-weight-light font-italic text-sm" id="doctype" name="doctype" required>
+                            <select class="form-select font-weight-light font-italic text-sm" id="doctype"
+                                    name="doctype" required>
                                 <option selected>Select Document Type..</option>
                                 {% for doctype in doctypes %}
-                                    <option value={{ school.id }}>{{ doctype.name }}</option>
+                                    <option value={{ doctype.id }}>{{ doctype.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="form-group mb-2">
                             <label class="form-label" for="uni">School</label>
-                            <select class="form-select font-weight-light font-italic text-sm" id="uni" name="uni" required>
-                                <option selected>Select your School..</option>
+                            <select class="form-select font-weight-light font-italic text-sm" id="uni" name="uni"
+                                    required>
+                                <option selected>Select the School Document belongs to..</option>
                                 {% for school in schools %}
                                     <option value={{ school.id }}>{{ school.name }}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div class="form-group mb-2">
-                            <label for="" class="form-label">File Info</label>
-                            <input type="text"
-                                   name="info" id="" class="form-control" required>
+                            <label for="" class="form-label">Description</label>
+                            <textarea
+                                    name="info" id="" class="form-control fw-lighter text-sm fst-italic" rows="3" minlength="20" placeholder="Enter Document Description.." required></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">

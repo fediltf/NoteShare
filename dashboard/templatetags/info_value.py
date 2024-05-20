@@ -44,13 +44,6 @@ def course_value(document_id):
         return ""
 
 
-@register.filter
-def subject_value(document_id):
-    file_info = Document.objects.filter(id=document_id)
-    if file_info.exists():
-        return file_info.first().subject
-    else:
-        return ""
 
 
 @register.filter

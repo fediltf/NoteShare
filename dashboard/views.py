@@ -22,7 +22,7 @@ from langdetect import detect
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from PyPDF2 import PdfReader, PdfWriter
-from dashboard.models import Document, Shingle, Student, Doctype, School
+from dashboard.models import Document, Shingle, Student, Doctype, School, Topic
 from sklearn.feature_extraction.text import TfidfVectorizer
 from PIL import Image, ImageFilter
 import fitz
@@ -41,9 +41,14 @@ def index(request):
         if request.user.is_superuser:
             students = Student.objects.all()
             files = Document.objects.all()
+            schools = School.objects.all().order_by('name')
+            topics = Topic.objects.all().order_by('name')
+            doctypes = Doctype.objects.all().order_by('name')
             context['students'] = students
             context['files'] = files
-
+            context['schools'] = schools
+            context['topics'] = topics
+            context['doctypes'] = doctypes
             return render(request, 'dashboard/pages/tables.html', context=context)
         return render(request, 'dashboard/pages/dashboard.html', context=context)
     else:
@@ -95,8 +100,9 @@ def file_manager(request, directory=''):
     directories = generate_nested_directory(media_path, media_path)
     selected_directory = directory
     user = request.user
-    doctypes = Doctype.objects.all()
-    schools = School.objects.all()
+    doctypes = Doctype.objects.all().order_by('name')
+    schools = School.objects.all().order_by('name')
+    topics = Topic.objects.all().order_by('name')
     if user.is_superuser:
         files = Document.objects.all()
     else:
@@ -109,7 +115,8 @@ def file_manager(request, directory=''):
         'segment': 'Library',
         'breadcrumbs': breadcrumbs,
         'doctypes': doctypes,
-        'schools': schools
+        'schools': schools,
+        'topics': topics
     }
     return render(request, 'dashboard/pages/file-manager.html', context)
 
@@ -144,6 +151,27 @@ def delete_file(request, document_id):
     return redirect(request.META.get('HTTP_REFERER'))
 
 
+def delete_school(request, school_id):
+    school = get_object_or_404(School, id=school_id)
+    if request.method == 'POST':
+        school.delete()
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
+def delete_doct(request, doct_id):
+    doct = get_object_or_404(Doctype, id=doct_id)
+    if request.method == 'POST':
+        doct.delete()
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
+def delete_subject(request, subject_id):
+    subject = get_object_or_404(Topic, id=subject_id)
+    if request.method == 'POST':
+        subject.delete()
+    return redirect(request.META.get('HTTP_REFERER'))
+
+
 def download_file(request, document_id):
     try:
         document = Document.objects.get(id=document_id)
@@ -169,16 +197,12 @@ def upload_file(request):
         file = request.FILES.get('file')
         info = request.POST.get('info')
         title = request.POST.get('title')
-        course = request.POST.get('course')
-        subject = request.POST.get('subject')
-        doctype = request.POST.get('doctype')
-        uni = request.POST.get('uni')
-
-        # Validate file type
-        # if not file.name.endswith('.pdf'):
-        #     messages.warning(request, 'Only PDF files are allowed.', extra_tags='file_upload')
-        #     return redirect(request.META.get('HTTP_REFERER'))
-
+        course_id = request.POST.get('course')
+        doctype_id = request.POST.get('doctype')
+        uni_id = request.POST.get('uni')
+        course = Topic.objects.get(id=course_id)
+        doctype = Doctype.objects.get(id=doctype_id)
+        uni = School.objects.get(id=uni_id)
         try:
             file_path = os.path.join(media_path, file.name)
             with open(file_path, 'wb+') as destination:
@@ -203,7 +227,7 @@ def upload_file(request):
 
             # Create Document and Shingle objects
             document = Document.objects.create(user=user, file_field=file, info=info, title=title, course=course,
-                                               subject=subject, doctype=doctype, uni=uni, text=text, lang=lang,
+                                               doctype=doctype, uni=uni, text=text, lang=lang,
                                                keywords=keywords, cost=awarded_points)
             student = document.user
             student.points_field += awarded_points
