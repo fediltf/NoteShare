@@ -9,13 +9,14 @@ from django.contrib.auth.views import (
     PasswordResetConfirmView,
     PasswordResetCompleteView
 )
-from custom_account.views import login_user, logout_user, register_user
+from custom_account.views import login_user, logout_user, register_user, complete_profile
 
 app_name = 'account'
 urlpatterns = [
     path('login', login_user, name="login"),
     path('logout', logout_user, name="logout"),
     path('register', register_user, name="register"),
+    path('update_profile', complete_profile, name="complete-profile"),
 
     # Password Reset URLs with Custom Templates
     path('password-reset/', CustomPasswordResetView.as_view(template_name='registration/password_reset.html'),

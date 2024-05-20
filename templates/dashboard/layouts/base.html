@@ -22,9 +22,9 @@
 
 <head>
     {% include 'dashboard/includes/head.html' %}
-    {% block extrahead %}{% endblock extrahead %}
+    {% block extrahead %}
+    {% endblock extrahead %}
     {% block extrastyle %}{% endblock extrastyle %}
-    <script src="{% static 'js/plugins/font-awesome.min.js' %}"></script>
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
@@ -37,6 +37,17 @@
         {% include 'dashboard/includes/navigation.html' %}
     {% endblock navigation %}
     <!-- End Navbar -->
+    <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                {% if forloop.last %}
+                    <div class="alert alert-secondary" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </div>
     {% block content %}{% endblock content %}
 </main>
 {% block fixed_plugin %}
@@ -54,7 +65,10 @@
         }
         Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
-    var mode = button.getAttribute("data-class");
+    {#var mode = button.getAttribute("data-class");#}
+
+    function changeLogo(mode) {
+
         var logo = document.getElementById("logoo");
 
         if (mode === "bg-slate-900") {
@@ -62,6 +76,7 @@
         } else if (mode === "bg-white") {
             logo.src = "{% static 'images/logo_NotesShare_dark_1.png' %}";
         }
+    }
 </script>
 <!-- Github buttons -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>

@@ -51,22 +51,6 @@
         </symbol>
     </svg>
     <div class="container-fluid py-4 px-5">
-        {% if messages %}
-            {% for message in messages %}
-                {#                {% if message.tags == 'file_upload' %}#}
-                <div class="alert alert-warning alert-dismissible fade show col-6 d-flex align-items-center"
-                     role="alert">
-                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img"
-                         aria-label="Warning:">
-                        <use xlink:href="#exclamation-triangle-fill"/>
-                    </svg>
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                            aria-label="Close"></button>
-                </div>
-                {#                {% endif %}#}
-            {% endfor %}
-        {% endif %}
         <div class="row">
             <div class="col-12">
                 <div class="card border shadow-xs mb-4">
@@ -74,6 +58,7 @@
                         <div class="d-sm-flex align-items-center">
                             <div>
                                 <h6 class="font-weight-semibold text-lg mb-0">My Uploads</h6>
+                                <p class="text-sm">See information about your documents</p>
                             </div>
                             <div class="ms-auto d-flex">
                                 <button type="button" class="btn btn-sm btn-white me-2">
@@ -248,7 +233,7 @@
                                                             File</h1>
                                                     </div>
                                                     <div class="modal-body">
-                                                        {{ file.file_field.name }}
+                                                        {{ file.id | display_value }}
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary"
@@ -385,16 +370,22 @@
                                    class="form-control" required>
                         </div>
                         <div class="form-group mb-2">
-                            <label for="" class="form-label">Document Type</label>
-                            <input type="text"
-                                   name="doctype"
-                                   class="form-control" required>
+                            <label class="form-label" for="doctype">Document Type</label>
+                            <select class="form-select font-weight-light font-italic text-sm" id="doctype" name="doctype" required>
+                                <option selected>Select Document Type..</option>
+                                {% for doctype in doctypes %}
+                                    <option value={{ school.id }}>{{ doctype.name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="form-group mb-2">
-                            <label for="" class="form-label">University</label>
-                            <input type="text"
-                                   name="uni"
-                                   class="form-control" required>
+                            <label class="form-label" for="uni">School</label>
+                            <select class="form-select font-weight-light font-italic text-sm" id="uni" name="uni" required>
+                                <option selected>Select your School..</option>
+                                {% for school in schools %}
+                                    <option value={{ school.id }}>{{ school.name }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="form-group mb-2">
                             <label for="" class="form-label">File Info</label>
@@ -409,6 +400,7 @@
                 </form>
             </div>
         </div>
+        {% include 'dashboard/includes/footer.html' %}
     </div>
 
 {% endblock %}

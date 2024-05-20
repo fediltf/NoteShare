@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'custom_account',
     'dashboard',
-    'django_elasticsearch_dsl',
+    'cart'
 ]
 
 MIDDLEWARE = [
@@ -61,6 +61,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cart.context_processors.cart'
             ],
         },
     },
@@ -161,10 +162,6 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-ELASTICSEARCH_DSL={
-    'default': {
-        'hosts': 'https://localhost:9200',
-    }
-}
+
 
 # AUTH_USER_MODEL = 'dashboard.Student'

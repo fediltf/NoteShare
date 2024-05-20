@@ -22,7 +22,7 @@ from langdetect import detect
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from PyPDF2 import PdfReader, PdfWriter
-from dashboard.models import Document, Shingle
+from dashboard.models import Document, Shingle, Student, Doctype, School
 from sklearn.feature_extraction.text import TfidfVectorizer
 from PIL import Image, ImageFilter
 import fitz
@@ -35,9 +35,16 @@ nltk.download('averaged_perceptron_tagger')
 
 
 def index(request):
-    context = {}
+    context = {'segment': 'dashboard'}
     if request.user.is_authenticated:
         context['user'] = request.user
+        if request.user.is_superuser:
+            students = Student.objects.all()
+            files = Document.objects.all()
+            context['students'] = students
+            context['files'] = files
+
+            return render(request, 'dashboard/pages/tables.html', context=context)
         return render(request, 'dashboard/pages/dashboard.html', context=context)
     else:
         return redirect('home')
@@ -88,18 +95,21 @@ def file_manager(request, directory=''):
     directories = generate_nested_directory(media_path, media_path)
     selected_directory = directory
     user = request.user
-    files = []
+    doctypes = Doctype.objects.all()
+    schools = School.objects.all()
     if user.is_superuser:
         files = Document.objects.all()
     else:
         files = Document.objects.filter(user=user.student)
 
-    breadcrumbs = get_breadcrumbs(request)
+    breadcrumbs = "My Documents"
 
     context = {
         'files': files,
-        'segment': 'file_manager',
-        'breadcrumbs': breadcrumbs
+        'segment': 'Library',
+        'breadcrumbs': breadcrumbs,
+        'doctypes': doctypes,
+        'schools': schools
     }
     return render(request, 'dashboard/pages/file-manager.html', context)
 
@@ -110,6 +120,7 @@ def wallet(request):
     points = user.points_field
     context = {
         'points': points,
+        'segment': 'wallet',
     }
     return render(request, 'dashboard/pages/wallet.html', context)
 
@@ -193,7 +204,7 @@ def upload_file(request):
             # Create Document and Shingle objects
             document = Document.objects.create(user=user, file_field=file, info=info, title=title, course=course,
                                                subject=subject, doctype=doctype, uni=uni, text=text, lang=lang,
-                                               keywords=keywords)
+                                               keywords=keywords, cost=awarded_points)
             student = document.user
             student.points_field += awarded_points
             student.save()
@@ -300,7 +311,8 @@ def search(request):
             restricted_pdf_view(request, file)
     else:
         files = []
-    context = {'files': files, 'query': query}
+    nb_files = files.count()
+    context = {'files': files, 'query': query, 'nb_files': nb_files}
 
     return render(request, 'dashboard/pages/search.html', context)
 

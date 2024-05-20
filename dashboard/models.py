@@ -16,12 +16,35 @@ def filename(instance, filename):
     return filename
 
 
+class Doctype(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class School(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Topic(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
 class Student(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    date_joined = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     points_field = models.IntegerField(default=0)
+    interests = models.ManyToManyField(Topic, null=True, blank=True)
 
     def __str__(self):
         return f"{self.user.username}"
+
 
 @receiver(post_save, sender=User)
 def create_student(sender, instance, created, **kwargs):
@@ -35,12 +58,13 @@ class Document(models.Model):
     info = models.CharField(max_length=255, null=True, blank=True)
     title = models.CharField(max_length=100, null=False, blank=False)
     course = models.CharField(max_length=100, null=False, blank=False)
-    subject = models.CharField(max_length=100, null=False, blank=False)
-    doctype = models.CharField(max_length=100, null=False, blank=False)
-    uni = models.CharField(max_length=100, null=False, blank=False)
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, blank=True, null=True)
+    doctype = models.ForeignKey(Doctype, on_delete=models.CASCADE, blank=True, null=True)
+    uni = models.ForeignKey(School, on_delete=models.CASCADE, blank=True, null=True)
     text = models.TextField(null=True, blank=True)
     lang = models.CharField(max_length=100, null=False, blank=False, default="en")
     keywords = models.CharField(max_length=4000, null=True, blank=True)
+    cost = models.IntegerField(default=0)
 
     def get_pickled_shingles(self):
         try:
@@ -50,6 +74,7 @@ class Document(models.Model):
                 return base64.b64decode(shingle.pickled_shingles)
         except Shingle.DoesNotExist:
             return None
+
     def __str__(self):
         return str(self.id)
 
