@@ -32,6 +32,8 @@ def cart_add(request):
 
         # Return resonse
         response = JsonResponse({'qty': cart_quantity})
+        messages.success(request,
+                         "Added Succesfully To Cart!")
         return response
 
 

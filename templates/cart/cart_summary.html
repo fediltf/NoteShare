@@ -21,21 +21,6 @@
     </svg>
     <div class="container-fluid py-4 px-5">
         {#    Cart List  #}
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-warning alert-dismissible fade show col-6 d-flex align-items-center"
-                     role="alert">
-                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img"
-                         aria-label="Warning:">
-                        <use xlink:href="#exclamation-triangle-fill"/>
-                    </svg>
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"
-                            aria-label="Close"></button>
-                </div>
-                {#                {% endif %}#}
-            {% endfor %}
-        {% endif %}
         <div class="row">
             <div class="col-12">
                 <div class="card border shadow-xs mb-4">
@@ -53,7 +38,7 @@
                                         class="btn btn-sm btn-dark btn-icon d-flex align-items-center me-2"
                                         data-bs-toggle="modal" data-bs-target="#exampleModal">
                                     <span class="btn-inner--icon me-1">
-                                          <i class="fa-solid fa-cash-register fs-6"></i>
+                                          <i class="fa fa-solid fa-cash-register fs-6"></i>
                                     </span>
                                     <a type="button" class="btn-inner--text"
                                        style="color: white; text-decoration: none;"> Checkout</a>
@@ -94,7 +79,7 @@
                                             <td class="align-middle">
                                                 <button title="Remove From Cart"
                                                         id="delete-document"
-                                                        class="fa-solid fa-trash text-danger delete-document"
+                                                        class="fa fa-solid fa-trash text-danger delete-document"
                                                         type="button"
                                                         data-index="{{ document.id }}"
                                                         style="background:none; border: none;">
@@ -169,7 +154,7 @@
                             <button type="button"
                                         class="btn btn-sm btn-light btn-icon d-flex align-items-center me-2">
                                     <span class="btn-inner--icon me-1">
-                                          <i class="fa-solid fa-credit-card fs-6"></i>
+                                          <i class="fa fa-solid fa-credit-card fs-6"></i>
                                     </span>
                                     <a type="button" class="btn-inner--text"
                                        style="color: black; text-decoration: none;"> Make Payment</a>

@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 def user_directory_path(instance, filename):
@@ -32,6 +33,7 @@ class School(models.Model):
 
 class Topic(models.Model):
     name = models.CharField(max_length=50)
+    coef = models.DecimalField(max_digits=2, decimal_places=1, validators=[MinValueValidator(0.0), MaxValueValidator(1.0)],null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -58,7 +60,6 @@ class Document(models.Model):
     file_field = models.FileField(unique=True, upload_to=filename)
     info = models.TextField(max_length=255, null=True, blank=True)
     title = models.CharField(max_length=100, null=False, blank=False)
-    # course = models.CharField(max_length=100, null=False, blank=False)
     course = models.ForeignKey(Topic, on_delete=models.CASCADE, blank=True, null=True)
     doctype = models.ForeignKey(Doctype, on_delete=models.CASCADE, blank=True, null=True)
     uni = models.ForeignKey(School, on_delete=models.CASCADE, blank=True, null=True)

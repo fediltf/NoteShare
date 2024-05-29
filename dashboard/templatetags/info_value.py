@@ -18,7 +18,7 @@ def basename(document_id):
 
 
 @register.filter
-def info_value(document_id):
+def desc_value(document_id):
     file_info = Document.objects.filter(id=document_id)
     if file_info.exists():
         return file_info.first().info
@@ -39,18 +39,24 @@ def title_value(document_id):
 def course_value(document_id):
     file_info = Document.objects.filter(id=document_id)
     if file_info.exists():
-        return file_info.first().course
+        return file_info.first().course.id
     else:
         return ""
 
-
+@register.filter
+def restricted_pdf(document_id):
+    document = Document.objects.filter(id=document_id).first()
+    if document:
+        name = document.file_field.name
+        p_name = os.path.splitext(name)[0]
+        return f'/media/{p_name}_restricted.pdf'
 
 
 @register.filter
 def doctype_value(document_id):
     file_info = Document.objects.filter(id=document_id)
     if file_info.exists():
-        return file_info.first().doctype
+        return file_info.first().doctype.id
     else:
         return ""
 
@@ -59,7 +65,7 @@ def doctype_value(document_id):
 def uni_value(document_id):
     file_info = Document.objects.filter(id=document_id)
     if file_info.exists():
-        return file_info.first().uni
+        return file_info.first().uni.id
     else:
         return ""
 

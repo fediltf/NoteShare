@@ -8,6 +8,28 @@
             background: #000;
             border-radius: 50%;
         }
+
+        .actions span {
+            cursor: pointer;
+        }
+
+        .modal {
+            z-index: 99999 !important;
+        }
+
+        #imgViewer::-webkit-scrollbar {
+            -webkit-appearance: none;
+            height: 10px;
+        }
+
+        #imgViewer img {
+            max-width: 100%;
+        }
+
+        #imgViewer::-webkit-scrollbar-thumb {
+            border-radius: 5px;
+            background-color: rgba(0, 0, 0, .5);
+            box-shadow: 0 0 1px rgba(255, 255, 255, .5);
     </style>
 {% endblock extrastyle %}
 {% block content %}
@@ -97,7 +119,7 @@
                                 <thead class="bg-gray-100">
                                 <tr>
                                     <th class="text-secondary text-xs font-weight-semibold opacity-7">Member</th>
-                                    <th class="text-secondary text-xs font-weight-semibold opacity-7 ps-2">Function</th>
+                                    <th class="text-secondary text-xs font-weight-semibold opacity-7 ps-2">School</th>
                                     <th class="text-center text-secondary text-xs font-weight-semibold opacity-7">
                                         Status
                                     </th>
@@ -249,10 +271,6 @@
                                                         <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-                                                                    {#                                                                <div type="button" class="close" data-dismiss="modal"#}
-                                                                    {#                                                                        aria-label="Close">#}
-                                                                    {#                                                                    <i class="fa-solid fa-circle-xmark fs-5"></i>#}
-                                                                    {#                                                                </div>#}
                                                                     {#                                                                <h1 class="modal-title fs-5">View Image</h1>#}
                                                                     <h5 class="modal-title" id="exampleModalLabel">
                                                                         {{ file.id|display_value }}
@@ -315,17 +333,16 @@
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h1 class="modal-title fs-5"
-                                                            id="staticBackdropLabel">{{ file.file_field.name }}</h1>
-                                                        <span>
+                                                            id="staticBackdropLabel">{{ file.id|display_value }}</h1>
+                                                        <span class="ms-2">
                                               <a href="{% url 'dashboard:download_file' file.id %}">
                                                 <i title="Download"
                                                    class="fa fa-solid fa-download text-success fs-4"></i>
                                               </a>
                                             </span>
-                                                        <div class="" id="modal-close-btn-{{ forloop.counter }}"
-                                                             data-bs-dismiss="modal" aria-label="Close">
-                                                            <i class="fa-solid fa-circle-xmark fs-5"></i>
-                                                        </div>
+                                                        <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <iframe src="/media/{{ file.file_field.name }}" width="100%"
@@ -334,7 +351,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- Delete Modal -->
+                                        <!-- Delete Document Modal -->
                                         <div class="modal fade" id="delete-{{ forloop.counter }}" tabindex="-1"
                                              aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog">
@@ -344,7 +361,7 @@
                                                             File</h1>
                                                     </div>
                                                     <div class="modal-body">
-                                                        {{ file.file_field.name }}
+                                                        {{ file.id|display_value }}
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary"
@@ -372,10 +389,9 @@
                                                     <div class="modal-header">
                                                         <h1 class="modal-title fs-5" id="exampleModalLabel">File
                                                             Info</h1>
-                                                        <div class="" id="modal-close-btn-{{ forloop.counter }}"
-                                                             data-bs-dismiss="modal" aria-label="Close">
-                                                            <i class="fa-solid fa-circle-xmark fs-5"></i>
-                                                        </div>
+                                                        <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <form action="{% url 'dashboard:save_info' file.id %}"
@@ -383,36 +399,56 @@
                                                             {% csrf_token %}
                                                             <div class="form-group mb-2">
                                                                 <label for="" class="form-label">Title</label>
-                                                                <input type="text" value="{{ file.id|title_value }}"
+                                                                <input type="text" value="{{ file.id|display_value }}"
                                                                        name="title"
                                                                        class="form-control">
                                                             </div>
                                                             <div class="form-group mb-2">
-                                                                <label for="" class="form-label">Course</label>
-                                                                <input type="text" value="{{ file.id|course_value }}"
-                                                                       name="course"
-                                                                       class="form-control">
+                                                                <label class="form-label" for="doctype">Course</label>
+                                                                <select class="form-select font-weight-light font-italic text-sm"
+                                                                        id="course"
+                                                                        name="course" required>
+                                                                    {% for topic in topics %}
+                                                                        <option value={{ topic.id }} {% if topic.id == file.id|course_value %}selected{% endif %}>{{ topic.name }}</option>
+                                                                    {% endfor %}
+                                                                </select>
                                                             </div>
                                                             <div class="form-group mb-2">
-                                                                <label for="" class="form-label">Document Type</label>
-                                                                <input type="text" value="{{ file.id|doctype_value }}"
-                                                                       name="doctype"
-                                                                       class="form-control">
+                                                                <label class="form-label" for="doctype">Document
+                                                                    Type</label>
+                                                                <select class="form-select font-weight-light font-italic text-sm"
+                                                                        id="doctype"
+                                                                        name="doctype" required>
+                                                                    <option selected>Select Document Type..</option>
+                                                                    {% for doctype in doctypes %}
+                                                                        <option value={{ doctype.id }} {% if doctype.id == file.id|doctype_value %}selected{% endif %}>{{ doctype.name }}</option>
+                                                                    {% endfor %}
+                                                                </select>
                                                             </div>
                                                             <div class="form-group mb-2">
-                                                                <label for="" class="form-label">University</label>
-                                                                <input type="text" value="{{ file.id|uni_value }}"
-                                                                       name="uni"
-                                                                       class="form-control">
+                                                                <label class="form-label" for="uni">School</label>
+                                                                <select class="form-select font-weight-light font-italic text-sm"
+                                                                        id="uni" name="uni"
+                                                                        required>
+                                                                    <option selected>Select the School Document belongs
+                                                                        to..
+                                                                    </option>
+                                                                    {% for school in schools %}
+                                                                        <option value={{ school.id }} {% if school.id == file.id|uni_value %}selected{% endif %}>{{ school.name }}</option>
+                                                                    {% endfor %}
+                                                                </select>
                                                             </div>
                                                             <div class="form-group mb-2">
-                                                                <label for="" class="form-label">File Info</label>
-                                                                <input type="text" value="{{ file.id|info_value }}"
-                                                                       name="info" id="" class="form-control">
+                                                                <label for="info" class="form-label">Description</label>
+                                                                <textarea
+                                                                        name="info" id="info"
+                                                                        class="form-control fw-lighter text-sm fst-italic"
+                                                                        rows="3" minlength="20"
+                                                                        required>{{ file.info }}</textarea>
                                                             </div>
                                                             <div class="d-flex justify-content-end">
                                                                 <button type="submit" class="btn btn-primary"
-                                                                        data-bs-dismiss="modal">Save
+                                                                        >Save
                                                                 </button>
                                                             </div>
                                                         </form>
@@ -455,7 +491,7 @@
                                 </button>
                                 <button type="button"
                                         class="btn btn-sm btn-dark btn-icon d-flex align-items-center me-2"
-                                        data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                        data-bs-toggle="modal" data-bs-target="#addSchoolModal">
                                     <i class="fa fa-solid fa-school fs-6"></i>
                                     <span class="ms-1 btn-inner--text">Add School</span>
                                 </button>
@@ -542,7 +578,7 @@
                                 </button>
                                 <button type="button"
                                         class="btn btn-sm btn-dark btn-icon d-flex align-items-center me-2"
-                                        data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                        data-bs-toggle="modal" data-bs-target="#addSubjectModal">
                                     <i class="fa fa-solid fa-book fs-6"></i>
                                     <span class="ms-1 btn-inner--text">Add Subject</span>
                                 </button>
@@ -566,6 +602,12 @@
                                     <tr>
                                         <td class="d-flex align-items-center py-3 px-4 text-xs">
                                             <span class="font-weight-semibold text-dark">{{ subject.name }}</span>
+                                        </td>
+                                        <td>
+                                            <span data-bs-toggle="modal" data-bs-target="#update-subject-{{ subject.id }}" type="button">
+                                                <i title="Update Subject" class="fa fa-solid fa-pen"
+                                                   style="color:#64748B"></i>
+                                            </span>
                                         </td>
                                         <td>
                                             <span type="button" data-bs-toggle="modal"
@@ -605,6 +647,44 @@
                                         </div>
                                     </div>
                                     <!-- End Delete Subject Modal -->
+                                    <!-- Update Subject Modal -->
+                                    <div class="modal fade" id="update-subject-{{ subject.id }}" tabindex="-1"
+                                         aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Update {{ subject.name }}</h1>
+
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form action="{% url 'dashboard:update_subject' subject.id %}"
+                                                          method="post">
+                                                        {% csrf_token %}
+                                                        <div class="form-group mb-2">
+                                                            <label for="" class="form-label">Title</label>
+                                                            <input type="text" value="{{ subject.name }}"
+                                                                   name="subject_name"
+                                                                   class="form-control">
+                                                        </div>
+                                                        <div class="form-group mb-2">
+                                                            <label for="subject_coeff" class="form-label">Subject Persistence
+                                                                Coefficient</label>
+                                                            <input type="number" id="subject_coeff" name="subject_coeff"
+                                                                   class="form-control fw-lighter text-sm fst-italic"
+                                                                   value="{{ subject.coef }}"
+                                                                   min="0.1" max="1.0" step="0.1" required>
+                                                        </div>
+                                                        <div class="d-flex justify-content-end">
+                                                            <button type="submit" class="btn btn-primary">Save
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- End Update Subject Modal -->
                                 {% endfor %}
                                 </tbody>
                             </table>
@@ -624,7 +704,7 @@
                             <div class="ms-auto d-flex">
                                 <button type="button"
                                         class="btn btn-sm btn-dark btn-icon d-flex align-items-center me-2"
-                                        data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                        data-bs-toggle="modal" data-bs-target="#addDocTypeModal">
                                     <i class="fa fa-solid fa-folder fs-6"></i>
                                     <span class="ms-1 btn-inner--text">Add Document Type</span>
                                 </button>
@@ -1087,5 +1167,204 @@
     </div>
     {% include 'dashboard/includes/footer.html' %}
     </div>
+    <!-- Add School Modal -->
+    <div class="modal fade" id="addSchoolModal" tabindex="-1" aria-labelledby="addSchoolModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
+            <form method="post" action="{% url 'dashboard:add_school' %}" id="add-school"
+                  enctype="multipart/form-data" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSchoolModalLabel">Add School</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    {% csrf_token %}
+                    <div class="form-group mb-2">
+                        <label for="" class="form-label">School Name</label>
+                        <input type="text"
+                               name="school_name"
+                               class="form-control fw-lighter text-sm fst-italic" placeholder="Enter School Name.."
+                               required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- End Add School Modal -->
+
+    <!-- Add DocType Modal -->
+    <div class="modal fade" id="addDocTypeModal" tabindex="-1" aria-labelledby="addDocTypeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
+            <form method="post" action="{% url 'dashboard:add_doct' %}" id="add-doct"
+                  enctype="multipart/form-data" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addDocTypeModalLabel">Add Document Type</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    {% csrf_token %}
+                    <div class="form-group mb-2">
+                        <label for="" class="form-label">Document Type</label>
+                        <input type="text"
+                               name="doct_name"
+                               class="form-control fw-lighter text-sm fst-italic" placeholder="Enter Document Type.."
+                               required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- End Add DocType Modal -->
+
+    <!-- Add Subject Modal -->
+    <div class="modal fade" id="addSubjectModal" tabindex="-1" aria-labelledby="addSubjectModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
+            <form method="post" action="{% url 'dashboard:add_subject' %}" id="add-subject"
+                  enctype="multipart/form-data" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSubjectModalLabel">Add Subject</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    {% csrf_token %}
+                    <div class="form-group mb-2">
+                        <label for="subject_name" class="form-label">Subject Name</label>
+                        <input type="text"
+                               name="subject_name"
+                               class="form-control fw-lighter text-sm fst-italic" placeholder="Enter Subject Name.."
+                               required>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="coeff" class="form-label">Subject Persistency Coefficient</label>
+                        <input type="number" id="coeff" name="coeff" class="form-control fw-lighter text-sm fst-italic"
+                               placeholder="Select coefficient from 0.1 to 1.."
+                               min="0.1" max="1.0" step="0.1" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- End Add Subject Modal -->
+    <!-- File Upload Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
+            <form method="post" action="{% url 'dashboard:upload_file' %}" id="upload-file"
+                  enctype="multipart/form-data" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Import Your File</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    {% csrf_token %}
+                    <div class="file-loading">
+                        <input id="input-b6b" name="file" type="file">
+                    </div>
+                    <div id="kartik-file-errors"></div>
+                    <div class="form-group mb-2">
+                        <label for="" class="form-label">Title</label>
+                        <input type="text"
+                               name="title"
+                               class="form-control fw-lighter text-sm fst-italic" placeholder="Enter Document Title.."
+                               required>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="form-label" for="doctype">Course</label>
+                        <select class="form-select font-weight-light font-italic text-sm" id="course"
+                                name="course" required>
+                            <option selected>Select Course..</option>
+                            {% for topic in topics %}
+                                <option value={{ topic.id }}>{{ topic.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="form-label" for="doctype">Document Type</label>
+                        <select class="form-select font-weight-light font-italic text-sm" id="doctype"
+                                name="doctype" required>
+                            <option selected>Select Document Type..</option>
+                            {% for doctype in doctypes %}
+                                <option value={{ doctype.id }}>{{ doctype.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="form-label" for="uni">School</label>
+                        <select class="form-select font-weight-light font-italic text-sm" id="uni" name="uni"
+                                required>
+                            <option selected>Select the School Document belongs to..</option>
+                            {% for school in schools %}
+                                <option value={{ school.id }}>{{ school.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="" class="form-label">Description</label>
+                        <textarea
+                                name="info" id="" class="form-control fw-lighter text-sm fst-italic" rows="3"
+                                minlength="20" placeholder="Enter Document Description.." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- End File Upload Modal -->
+
+
 
 {% endblock content %}
+{% block extrascripts %}
+
+    <script>
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' || event.key === 'Esc' || event.key === 27) {
+                let files = document.getElementById('files-count').textContent;
+                for (let i = 1; i <= files; i++) {
+                    let closeButtonElements = document.getElementById(`modal-close-btn-${i}`);
+                    closeButtonElements.click();
+                }
+            }
+        })
+        $(document).ready(function () {
+            $("#input-b6b").fileinput({
+                showUpload: false,
+                dropZoneEnabled: false,
+                elErrorContainer: '#kartik-file-errors',
+                allowedFileExtensions: ["pdf"],
+                inputGroupClass: "input-group-sm"
+            });
+        });
+        $('img').on('click', function (e) {
+            $('#imgViewer').html('').append($(e.currentTarget).clone().removeClass('avatar').removeClass('avatar-2xl'))
+            $('#viewImg').modal('show')
+        })
+
+        $('img').each(function (i, e) {
+            $(e).wrap('<div class="img-wrapper"></div>')
+        })
+        // Function to collapse the modal
+        $('.close').on('click', function () {
+            $('#viewImg').modal('hide');
+        });
+    </script>
+{% endblock extrascripts %}

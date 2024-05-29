@@ -263,7 +263,7 @@
                                                             Info</h1>
                                                         <div class="" id="modal-close-btn-{{ forloop.counter }}"
                                                              data-bs-dismiss="modal" aria-label="Close">
-                                                            <i class="fa-solid fa-circle-xmark fs-5"></i>
+                                                            <i class="fa fa-solid fa-circle-xmark fs-5"></i>
                                                         </div>
                                                     </div>
                                                     <div class="modal-body">
@@ -277,37 +277,50 @@
                                                                        class="form-control">
                                                             </div>
                                                             <div class="form-group mb-2">
-                                                                <label for="" class="form-label">Course</label>
-                                                                <input type="text" value="{{ file.id|course_value }}"
-                                                                       name="course"
-                                                                       class="form-control">
-                                                            </div>
-{#                                                            <div class="form-group mb-2">#}
-{#                                                                <label for="" class="form-label">Subject</label>#}
-{#                                                                <input type="text" value="{{ file.id|subject_value }}"#}
-{#                                                                       name="subject"#}
-{#                                                                       class="form-control">#}
-{#                                                            </div>#}
-                                                            <div class="form-group mb-2">
-                                                                <label for="" class="form-label">Document Type</label>
-                                                                <input type="text" value="{{ file.id|doctype_value }}"
-                                                                       name="doctype"
-                                                                       class="form-control">
+                                                                <label class="form-label" for="doctype">Course</label>
+                                                                <select class="form-select font-weight-light font-italic text-sm"
+                                                                        id="course"
+                                                                        name="course" required>
+                                                                    {% for topic in topics %}
+                                                                        <option value={{ topic.id }} {% if topic.id == file.id|course_value %}selected{% endif %}>{{ topic.name }}</option>
+                                                                    {% endfor %}
+                                                                </select>
                                                             </div>
                                                             <div class="form-group mb-2">
-                                                                <label for="" class="form-label">University</label>
-                                                                <input type="text" value="{{ file.id|uni_value }}"
-                                                                       name="uni"
-                                                                       class="form-control">
+                                                                <label class="form-label" for="doctype">Document
+                                                                    Type</label>
+                                                                <select class="form-select font-weight-light font-italic text-sm"
+                                                                        id="doctype"
+                                                                        name="doctype" required>
+                                                                    <option selected>Select Document Type..</option>
+                                                                    {% for doctype in doctypes %}
+                                                                        <option value={{ doctype.id }} {% if doctype.id == file.id|doctype_value %}selected{% endif %}>{{ doctype.name }}</option>
+                                                                    {% endfor %}
+                                                                </select>
                                                             </div>
                                                             <div class="form-group mb-2">
-                                                                <label for="" class="form-label">File Info</label>
-                                                                <input type="text" value="{{ file.id|info_value }}"
-                                                                       name="info" id="" class="form-control">
+                                                                <label class="form-label" for="uni">School</label>
+                                                                <select class="form-select font-weight-light font-italic text-sm"
+                                                                        id="uni" name="uni"
+                                                                        required>
+                                                                    <option selected>Select the School Document belongs
+                                                                        to..
+                                                                    </option>
+                                                                    {% for school in schools %}
+                                                                        <option value={{ school.id }} {% if school.id == file.id|uni_value %}selected{% endif %}>{{ school.name }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group mb-2">
+                                                                <label for="" class="form-label">Description</label>
+                                                                <textarea
+                                                                        name="info" id="info"
+                                                                        class="form-control fw-lighter text-sm fst-italic"
+                                                                        rows="3" minlength="20"
+                                                                        value="{{ file.info }}" required></textarea>
                                                             </div>
                                                             <div class="d-flex justify-content-end">
-                                                                <button type="submit" class="btn btn-primary"
-                                                                        data-bs-dismiss="modal">Save
+                                                                <button type="submit" class="btn btn-primary">Save
                                                                 </button>
                                                             </div>
                                                         </form>

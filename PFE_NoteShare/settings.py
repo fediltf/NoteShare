@@ -158,7 +158,7 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-LOGIN_REDIRECT_URL = '/dashboard/'
+LOGIN_REDIRECT_URL = 'dashboard:index'
 LOGOUT_REDIRECT_URL = '/'
 
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
