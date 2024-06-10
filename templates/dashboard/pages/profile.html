@@ -1,6 +1,12 @@
 {% extends 'dashboard/layouts/base-fullscreen.html' %}
 {% load static %}
-
+{% block extrastyle %}
+    <style>
+        .modal {
+            z-index: 99999 !important;
+        }
+    </style>
+{% endblock extrastyle %}
 {% block content %}
 
     <div class="pt-7 pb-6 bg-cover"
@@ -16,87 +22,87 @@
                 <div class="col-auto my-auto">
                     <div class="h-100">
                         <h3 class="mb-0 font-weight-bold">
-                            {{ user.username }}
+                            {{ user.first_name }} {{ user.last_name }}
                         </h3>
                         <p class="mb-0">
                             {{ user.email }}
                         </p>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3 text-sm-end">
-                    <a href="javascript:;" class="btn btn-sm btn-white">Cancel</a>
-                    <a href="javascript:;" class="btn btn-sm btn-dark">Save</a>
-                </div>
+                {#                <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3 text-sm-end">#}
+                {#                    <a href="javascript:;" class="btn btn-sm btn-white">Cancel</a>#}
+                {#                    <a href="javascript:;" class="btn btn-sm btn-dark">Save</a>#}
+                {#                </div>#}
             </div>
         </div>
     </div>
     <div class="container my-3 py-3">
         <div class="row">
-{#            <div class="col-12 col-xl-4 mb-4">#}
-{#                <div class="card border shadow-xs h-100">#}
-{#                    <div class="card-header pb-0 p-3">#}
-{#                        <h6 class="mb-0 font-weight-semibold text-lg">Notifications settings</h6>#}
-{#                        <p class="text-sm mb-1">Here you can set preferences.</p>#}
-{#                    </div>#}
-{#                    <div class="card-body p-3">#}
-{#                        <h6 class="text-dark font-weight-semibold mb-1">Account</h6>#}
-{#                        <ul class="list-group">#}
-{#                            <li class="list-group-item border-0 px-0">#}
-{#                                <div class="form-check form-switch ps-0">#}
-{#                                    <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault"#}
-{#                                           checked>#}
-{#                                    <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0"#}
-{#                                           for="flexSwitchCheckDefault">Email me when someone follows me</label>#}
-{#                                </div>#}
-{#                            </li>#}
-{#                            <li class="list-group-item border-0 px-0">#}
-{#                                <div class="form-check form-switch ps-0">#}
-{#                                    <input class="form-check-input ms-auto" type="checkbox"#}
-{#                                           id="flexSwitchCheckDefault1">#}
-{#                                    <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0"#}
-{#                                           for="flexSwitchCheckDefault1">Email me when someone answers on my#}
-{#                                        post</label>#}
-{#                                </div>#}
-{#                            </li>#}
-{#                            <li class="list-group-item border-0 px-0">#}
-{#                                <div class="form-check form-switch ps-0">#}
-{#                                    <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault2"#}
-{#                                           checked>#}
-{#                                    <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0"#}
-{#                                           for="flexSwitchCheckDefault2">Email me when someone mentions me</label>#}
-{#                                </div>#}
-{#                            </li>#}
-{#                        </ul>#}
-{#                        <h6 class="text-dark font-weight-semibold mt-2 mb-1">Application</h6>#}
-{#                        <ul class="list-group">#}
-{#                            <li class="list-group-item border-0 px-0">#}
-{#                                <div class="form-check form-switch ps-0">#}
-{#                                    <input class="form-check-input ms-auto" type="checkbox"#}
-{#                                           id="flexSwitchCheckDefault3">#}
-{#                                    <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0"#}
-{#                                           for="flexSwitchCheckDefault3">New launches and projects</label>#}
-{#                                </div>#}
-{#                            </li>#}
-{#                            <li class="list-group-item border-0 px-0">#}
-{#                                <div class="form-check form-switch ps-0">#}
-{#                                    <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault4"#}
-{#                                           checked>#}
-{#                                    <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0"#}
-{#                                           for="flexSwitchCheckDefault4">Monthly product updates</label>#}
-{#                                </div>#}
-{#                            </li>#}
-{#                            <li class="list-group-item border-0 px-0 pb-0">#}
-{#                                <div class="form-check form-switch ps-0">#}
-{#                                    <input class="form-check-input ms-auto" type="checkbox"#}
-{#                                           id="flexSwitchCheckDefault5">#}
-{#                                    <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0"#}
-{#                                           for="flexSwitchCheckDefault5">Subscribe to newsletter</label>#}
-{#                                </div>#}
-{#                            </li>#}
-{#                        </ul>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
+            {#            <div class="col-12 col-xl-4 mb-4">#}
+            {#                <div class="card border shadow-xs h-100">#}
+            {#                    <div class="card-header pb-0 p-3">#}
+            {#                        <h6 class="mb-0 font-weight-semibold text-lg">Notifications settings</h6>#}
+            {#                        <p class="text-sm mb-1">Here you can set preferences.</p>#}
+            {#                    </div>#}
+            {#                    <div class="card-body p-3">#}
+            {#                        <h6 class="text-dark font-weight-semibold mb-1">Account</h6>#}
+            {#                        <ul class="list-group">#}
+            {#                            <li class="list-group-item border-0 px-0">#}
+            {#                                <div class="form-check form-switch ps-0">#}
+            {#                                    <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault"#}
+            {#                                           checked>#}
+            {#                                    <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0"#}
+            {#                                           for="flexSwitchCheckDefault">Email me when someone follows me</label>#}
+            {#                                </div>#}
+            {#                            </li>#}
+            {#                            <li class="list-group-item border-0 px-0">#}
+            {#                                <div class="form-check form-switch ps-0">#}
+            {#                                    <input class="form-check-input ms-auto" type="checkbox"#}
+            {#                                           id="flexSwitchCheckDefault1">#}
+            {#                                    <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0"#}
+            {#                                           for="flexSwitchCheckDefault1">Email me when someone answers on my#}
+            {#                                        post</label>#}
+            {#                                </div>#}
+            {#                            </li>#}
+            {#                            <li class="list-group-item border-0 px-0">#}
+            {#                                <div class="form-check form-switch ps-0">#}
+            {#                                    <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault2"#}
+            {#                                           checked>#}
+            {#                                    <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0"#}
+            {#                                           for="flexSwitchCheckDefault2">Email me when someone mentions me</label>#}
+            {#                                </div>#}
+            {#                            </li>#}
+            {#                        </ul>#}
+            {#                        <h6 class="text-dark font-weight-semibold mt-2 mb-1">Application</h6>#}
+            {#                        <ul class="list-group">#}
+            {#                            <li class="list-group-item border-0 px-0">#}
+            {#                                <div class="form-check form-switch ps-0">#}
+            {#                                    <input class="form-check-input ms-auto" type="checkbox"#}
+            {#                                           id="flexSwitchCheckDefault3">#}
+            {#                                    <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0"#}
+            {#                                           for="flexSwitchCheckDefault3">New launches and projects</label>#}
+            {#                                </div>#}
+            {#                            </li>#}
+            {#                            <li class="list-group-item border-0 px-0">#}
+            {#                                <div class="form-check form-switch ps-0">#}
+            {#                                    <input class="form-check-input ms-auto" type="checkbox" id="flexSwitchCheckDefault4"#}
+            {#                                           checked>#}
+            {#                                    <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0"#}
+            {#                                           for="flexSwitchCheckDefault4">Monthly product updates</label>#}
+            {#                                </div>#}
+            {#                            </li>#}
+            {#                            <li class="list-group-item border-0 px-0 pb-0">#}
+            {#                                <div class="form-check form-switch ps-0">#}
+            {#                                    <input class="form-check-input ms-auto" type="checkbox"#}
+            {#                                           id="flexSwitchCheckDefault5">#}
+            {#                                    <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0"#}
+            {#                                           for="flexSwitchCheckDefault5">Subscribe to newsletter</label>#}
+            {#                                </div>#}
+            {#                            </li>#}
+            {#                        </ul>#}
+            {#                    </div>#}
+            {#                </div>#}
+            {#            </div>#}
             <div class="col-12 col-xl-4 mb-4">
                 <div class="card border shadow-xs h-100">
                     <div class="card-header pb-0 p-3">
@@ -106,7 +112,8 @@
                                 <p class="text-sm mb-1">Edit the information about you.</p>
                             </div>
                             <div class="col-md-4 col-3 text-end">
-                                <button type="button" class="btn btn-white btn-icon px-2 py-2">
+                                <button type="button" class="btn btn-white btn-icon px-2 py-2" data-bs-toggle="modal"
+                                        data-bs-target="#update-user-{{ user.id }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                                          fill="currentColor">
                                         <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32L19.513 8.2z"/>
@@ -116,141 +123,143 @@
                         </div>
                     </div>
                     <div class="card-body p-3">
-                        <p class="text-sm mb-4">
-                            Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally
-                            difficult paths, choose the one more painful in the short term (pain avoidance is creating
-                            an illusion of equality).
-                        </p>
+                        {#<p class="text-sm mb-4"></p>#}
                         <ul class="list-group">
                             <li class="list-group-item border-0 ps-0 text-dark font-weight-semibold pt-0 pb-1 text-sm">
-                                <span class="text-secondary">First Name:</span> &nbsp; Noah
+                                <span class="text-secondary">First Name:</span> &nbsp; {{ user.first_name }}
                             </li>
                             <li class="list-group-item border-0 ps-0 text-dark font-weight-semibold pb-1 text-sm"><span
-                                    class="text-secondary">Last Name:</span> &nbsp; Mclaren
+                                    class="text-secondary">Last Name:</span> &nbsp; {{ user.last_name }}
                             </li>
                             <li class="list-group-item border-0 ps-0 text-dark font-weight-semibold pb-1 text-sm"><span
-                                    class="text-secondary">Mobile:</span> &nbsp; +(44) 123 1234 123
+                                    class="text-secondary">School:</span> &nbsp; {{ user.student.school }}
                             </li>
                             <li class="list-group-item border-0 ps-0 text-dark font-weight-semibold pb-1 text-sm"><span
-                                    class="text-secondary">Function:</span> &nbsp; Manager - Organization
+                                    class="text-secondary">Date Joined:</span>
+                                &nbsp; {{ user.student.date_joined|date:"F j, Y" }}
                             </li>
                             <li class="list-group-item border-0 ps-0 text-dark font-weight-semibold pb-1 text-sm"><span
-                                    class="text-secondary">Location:</span> &nbsp; USA
+                                    class="text-secondary">Interests:</span> &nbsp;
+                                {% for interest in user.student.interests.all %}
+                                    {{ interest.name }}{% if not forloop.last %}, {% endif %}
+                                {% empty %}
+                                    No interests available.
+                                {% endfor %}
                             </li>
-                            <li class="list-group-item border-0 ps-0 text-dark font-weight-semibold pb-1 text-sm">
-                                <span class="text-secondary">Social:</span> &nbsp;
-                                <a class="btn btn-link text-dark mb-0 ps-1 pe-1 py-0" href="javascript:;">
-                                    <i class="fab fa-linkedin fa-lg"></i>
-                                </a>
-                                <a class="btn btn-link text-dark mb-0 ps-1 pe-1 py-0" href="javascript:;">
-                                    <i class="fab fa-github fa-lg"></i>
-                                </a>
-                                <a class="btn btn-link text-dark mb-0 ps-1 pe-1 py-0" href="javascript:;">
-                                    <i class="fab fa-slack fa-lg"></i>
-                                </a>
-                            </li>
+                            {#                            <li class="list-group-item border-0 ps-0 text-dark font-weight-semibold pb-1 text-sm">#}
+                            {#                                <span class="text-secondary">Social:</span> &nbsp;#}
+                            {#                                <a class="btn btn-link text-dark mb-0 ps-1 pe-1 py-0" href="javascript:;">#}
+                            {#                                    <i class="fab fa-linkedin fa-lg"></i>#}
+                            {#                                </a>#}
+                            {#                                <a class="btn btn-link text-dark mb-0 ps-1 pe-1 py-0" href="javascript:;">#}
+                            {#                                    <i class="fab fa-github fa-lg"></i>#}
+                            {#                                </a>#}
+                            {#                                <a class="btn btn-link text-dark mb-0 ps-1 pe-1 py-0" href="javascript:;">#}
+                            {#                                    <i class="fab fa-slack fa-lg"></i>#}
+                            {#                                </a>#}
+                            {#                            </li>#}
                         </ul>
                     </div>
                 </div>
             </div>
-{#            <div class="col-12 col-xl-4 mb-4">#}
-{#                <div class="card border shadow-xs h-100">#}
-{#                    <div class="card-header pb-0 p-3">#}
-{#                        <div class="row mb-sm-0 mb-2">#}
-{#                            <div class="col-md-8 col-9">#}
-{#                                <h6 class="mb-0 font-weight-semibold text-lg">Internal chat</h6>#}
-{#                                <p class="text-sm mb-0">/marketing channel</p>#}
-{#                            </div>#}
-{#                            <div class="col-md-4 col-3 text-end">#}
-{#                                <button type="button" class="btn btn-white btn-icon px-2 py-2">#}
-{#                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"#}
-{#                                         fill="currentColor">#}
-{#                                        <path fill-rule="evenodd"#}
-{#                                              d="M10.5 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z"#}
-{#                                              clip-rule="evenodd"/>#}
-{#                                    </svg>#}
-{#                                </button>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
-{#                    <div class="card-body p-3 pt-0">#}
-{#                        <ul class="list-group">#}
-{#                            <li class="list-group-item border-0 d-flex align-items-center px-0 mb-1">#}
-{#                                <div class="avatar avatar-sm rounded-circle me-2">#}
-{#                                    <img src="{% static 'assets/img/team-1.jpg' %}" alt="kal" class="w-100">#}
-{#                                </div>#}
-{#                                <div class="d-flex align-items-start flex-column justify-content-center">#}
-{#                                    <h6 class="mb-0 text-sm font-weight-semibold">Sarah Lamalo</h6>#}
-{#                                    <p class="mb-0 text-sm text-secondary">Hi! I need more information about ...</p>#}
-{#                                </div>#}
-{#                                <span class="p-1 bg-success rounded-circle ms-auto me-3">#}
-{#                  <span class="visually-hidden">Online</span>#}
-{#                </span>#}
-{#                            </li>#}
-{#                            <li class="list-group-item border-0 d-flex align-items-center px-0 mb-1">#}
-{#                                <div class="avatar avatar-sm rounded-circle me-2">#}
-{#                                    <img src="{% static 'assets/img/marie.jpg' %}" alt="kal" class="w-100">#}
-{#                                </div>#}
-{#                                <div class="d-flex align-items-start flex-column justify-content-center">#}
-{#                                    <h6 class="mb-0 text-sm font-weight-semibold">Vicky Hladynets</h6>#}
-{#                                    <p class="mb-0 text-sm text-secondary">Hello, Noah!</p>#}
-{#                                </div>#}
-{#                                <span class="p-1 bg-success rounded-circle ms-auto me-3">#}
-{#                  <span class="visually-hidden">Online</span>#}
-{#                </span>#}
-{#                            </li>#}
-{#                            <li class="list-group-item border-0 d-flex align-items-center px-0 mb-1">#}
-{#                                <div class="avatar avatar-sm rounded-circle me-2">#}
-{#                                    <img src="{% static 'assets/img/team-5.jpg' %}" alt="kal" class="w-100">#}
-{#                                </div>#}
-{#                                <div class="d-flex align-items-start flex-column justify-content-center">#}
-{#                                    <h6 class="mb-0 text-sm font-weight-semibold">Charles Deluvio</h6>#}
-{#                                    <p class="mb-0 text-sm text-secondary">Great, thank you!</p>#}
-{#                                </div>#}
-{#                                <span class="p-1 bg-success rounded-circle ms-auto me-3">#}
-{#                  <span class="visually-hidden">Online</span>#}
-{#                </span>#}
-{#                            </li>#}
-{#                            <li class="list-group-item border-0 d-flex align-items-center px-0 mb-1">#}
-{#                                <div class="avatar avatar-sm rounded-circle me-2">#}
-{#                                    <img src="{% static 'assets/img/team-4.jpg' %}" alt="kal" class="w-100">#}
-{#                                </div>#}
-{#                                <div class="d-flex align-items-start flex-column justify-content-center">#}
-{#                                    <h6 class="mb-0 text-sm font-weight-semibold">Leio Mclaren</h6>#}
-{#                                    <p class="mb-0 text-sm text-secondary">Don't worry! 🙏🏻</p>#}
-{#                                </div>#}
-{#                                <span class="p-1 bg-success rounded-circle ms-auto me-3">#}
-{#                  <span class="visually-hidden">Online</span>#}
-{#                </span>#}
-{#                            </li>#}
-{#                            <li class="list-group-item border-0 d-flex align-items-center px-0 mb-1">#}
-{#                                <div class="avatar avatar-sm rounded-circle me-2">#}
-{#                                    <img src="{% static 'assets/img/team-3.jpg' %}" alt="kal" class="w-100">#}
-{#                                </div>#}
-{#                                <div class="d-flex align-items-start flex-column justify-content-center">#}
-{#                                    <h6 class="mb-0 text-sm font-weight-semibold">Mateus Campos</h6>#}
-{#                                    <p class="mb-0 text-sm text-secondary">Call me, please.</p>#}
-{#                                </div>#}
-{#                                <span class="p-1 bg-success rounded-circle ms-auto me-3">#}
-{#                  <span class="visually-hidden">Online</span>#}
-{#                </span>#}
-{#                            </li>#}
-{#                            <li class="list-group-item border-0 d-flex align-items-center px-0 mb-1">#}
-{#                                <div class="avatar avatar-sm rounded-circle me-2">#}
-{#                                    <img src="{% static 'assets/img/team-2.jpg' %}" alt="kal" class="w-100">#}
-{#                                </div>#}
-{#                                <div class="d-flex align-items-start flex-column justify-content-center">#}
-{#                                    <h6 class="mb-0 text-sm font-weight-semibold">Miriam Lore</h6>#}
-{#                                    <p class="mb-0 text-sm text-secondary">Well done!</p>#}
-{#                                </div>#}
-{#                                <span class="p-1 bg-success rounded-circle ms-auto me-3">#}
-{#                  <span class="visually-hidden">Online</span>#}
-{#                </span>#}
-{#                            </li>#}
-{#                        </ul>#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
+            {#            <div class="col-12 col-xl-4 mb-4">#}
+            {#                <div class="card border shadow-xs h-100">#}
+            {#                    <div class="card-header pb-0 p-3">#}
+            {#                        <div class="row mb-sm-0 mb-2">#}
+            {#                            <div class="col-md-8 col-9">#}
+            {#                                <h6 class="mb-0 font-weight-semibold text-lg">Internal chat</h6>#}
+            {#                                <p class="text-sm mb-0">/marketing channel</p>#}
+            {#                            </div>#}
+            {#                            <div class="col-md-4 col-3 text-end">#}
+            {#                                <button type="button" class="btn btn-white btn-icon px-2 py-2">#}
+            {#                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"#}
+            {#                                         fill="currentColor">#}
+            {#                                        <path fill-rule="evenodd"#}
+            {#                                              d="M10.5 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zm0 6a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z"#}
+            {#                                              clip-rule="evenodd"/>#}
+            {#                                    </svg>#}
+            {#                                </button>#}
+            {#                            </div>#}
+            {#                        </div>#}
+            {#                    </div>#}
+            {#                    <div class="card-body p-3 pt-0">#}
+            {#                        <ul class="list-group">#}
+            {#                            <li class="list-group-item border-0 d-flex align-items-center px-0 mb-1">#}
+            {#                                <div class="avatar avatar-sm rounded-circle me-2">#}
+            {#                                    <img src="{% static 'assets/img/team-1.jpg' %}" alt="kal" class="w-100">#}
+            {#                                </div>#}
+            {#                                <div class="d-flex align-items-start flex-column justify-content-center">#}
+            {#                                    <h6 class="mb-0 text-sm font-weight-semibold">Sarah Lamalo</h6>#}
+            {#                                    <p class="mb-0 text-sm text-secondary">Hi! I need more information about ...</p>#}
+            {#                                </div>#}
+            {#                                <span class="p-1 bg-success rounded-circle ms-auto me-3">#}
+            {#                  <span class="visually-hidden">Online</span>#}
+            {#                </span>#}
+            {#                            </li>#}
+            {#                            <li class="list-group-item border-0 d-flex align-items-center px-0 mb-1">#}
+            {#                                <div class="avatar avatar-sm rounded-circle me-2">#}
+            {#                                    <img src="{% static 'assets/img/marie.jpg' %}" alt="kal" class="w-100">#}
+            {#                                </div>#}
+            {#                                <div class="d-flex align-items-start flex-column justify-content-center">#}
+            {#                                    <h6 class="mb-0 text-sm font-weight-semibold">Vicky Hladynets</h6>#}
+            {#                                    <p class="mb-0 text-sm text-secondary">Hello, Noah!</p>#}
+            {#                                </div>#}
+            {#                                <span class="p-1 bg-success rounded-circle ms-auto me-3">#}
+            {#                  <span class="visually-hidden">Online</span>#}
+            {#                </span>#}
+            {#                            </li>#}
+            {#                            <li class="list-group-item border-0 d-flex align-items-center px-0 mb-1">#}
+            {#                                <div class="avatar avatar-sm rounded-circle me-2">#}
+            {#                                    <img src="{% static 'assets/img/team-5.jpg' %}" alt="kal" class="w-100">#}
+            {#                                </div>#}
+            {#                                <div class="d-flex align-items-start flex-column justify-content-center">#}
+            {#                                    <h6 class="mb-0 text-sm font-weight-semibold">Charles Deluvio</h6>#}
+            {#                                    <p class="mb-0 text-sm text-secondary">Great, thank you!</p>#}
+            {#                                </div>#}
+            {#                                <span class="p-1 bg-success rounded-circle ms-auto me-3">#}
+            {#                  <span class="visually-hidden">Online</span>#}
+            {#                </span>#}
+            {#                            </li>#}
+            {#                            <li class="list-group-item border-0 d-flex align-items-center px-0 mb-1">#}
+            {#                                <div class="avatar avatar-sm rounded-circle me-2">#}
+            {#                                    <img src="{% static 'assets/img/team-4.jpg' %}" alt="kal" class="w-100">#}
+            {#                                </div>#}
+            {#                                <div class="d-flex align-items-start flex-column justify-content-center">#}
+            {#                                    <h6 class="mb-0 text-sm font-weight-semibold">Leio Mclaren</h6>#}
+            {#                                    <p class="mb-0 text-sm text-secondary">Don't worry! 🙏🏻</p>#}
+            {#                                </div>#}
+            {#                                <span class="p-1 bg-success rounded-circle ms-auto me-3">#}
+            {#                  <span class="visually-hidden">Online</span>#}
+            {#                </span>#}
+            {#                            </li>#}
+            {#                            <li class="list-group-item border-0 d-flex align-items-center px-0 mb-1">#}
+            {#                                <div class="avatar avatar-sm rounded-circle me-2">#}
+            {#                                    <img src="{% static 'assets/img/team-3.jpg' %}" alt="kal" class="w-100">#}
+            {#                                </div>#}
+            {#                                <div class="d-flex align-items-start flex-column justify-content-center">#}
+            {#                                    <h6 class="mb-0 text-sm font-weight-semibold">Mateus Campos</h6>#}
+            {#                                    <p class="mb-0 text-sm text-secondary">Call me, please.</p>#}
+            {#                                </div>#}
+            {#                                <span class="p-1 bg-success rounded-circle ms-auto me-3">#}
+            {#                  <span class="visually-hidden">Online</span>#}
+            {#                </span>#}
+            {#                            </li>#}
+            {#                            <li class="list-group-item border-0 d-flex align-items-center px-0 mb-1">#}
+            {#                                <div class="avatar avatar-sm rounded-circle me-2">#}
+            {#                                    <img src="{% static 'assets/img/team-2.jpg' %}" alt="kal" class="w-100">#}
+            {#                                </div>#}
+            {#                                <div class="d-flex align-items-start flex-column justify-content-center">#}
+            {#                                    <h6 class="mb-0 text-sm font-weight-semibold">Miriam Lore</h6>#}
+            {#                                    <p class="mb-0 text-sm text-secondary">Well done!</p>#}
+            {#                                </div>#}
+            {#                                <span class="p-1 bg-success rounded-circle ms-auto me-3">#}
+            {#                  <span class="visually-hidden">Online</span>#}
+            {#                </span>#}
+            {#                            </li>#}
+            {#                        </ul>#}
+            {#                    </div>#}
+            {#                </div>#}
+            {#            </div>#}
             <div class="col-12">
                 <div class="card shadow-xs border mb-4 pb-3">
                     <div class="card-header pb-0 p-3">
@@ -353,6 +362,71 @@
         </div>
         {% include 'dashboard/includes/footer.html' %}
     </div>
+    <!-- Update User Modal -->
+    <div class="modal fade" id="update-user-{{ user.id }}" tabindex="-1"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Update Profile</h1>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form
+                            action="{% url 'dashboard:update-profile' %}"
+                            method="post">
+                        {% csrf_token %}
+                        <div class="form-group mb-2">
+                            <label for="fst_name" class="form-label">First Name</label>
+                            <input type="text" value="{{ user.first_name }}"
+                                   name="fst_name"
+                                   class="form-control">
+                        </div>
+                        <div class="form-group mb-2">
+                            <label for="lst_name" class="form-label">Last Name</label>
+                            <input type="text" value="{{ user.last_name }}"
+                                   name="lst_name"
+                                   class="form-control">
+                        </div>
+                        <div class="form-group mb-2">
+                            <label for="uni" class="fom-label">School: </label>
+                            <select class="form-select font-weight-light font-italic text-sm" id="uni"
+                                    name="uni" required>
+                                {% for school in schools %}
+                                    <option value="{{ school.id }}"
+                                            {% if user.student.school == school %}selected{% endif %}>
+                                        {{ school.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label for="interests" class="fom-label">Interests: </label>
+                            <div id="interests" role="group" aria-label="Basic radio toggle button group justify">
+                                {% for topic in topics %}
+                                        <div class="form-check form-check-inline mb-1 me-1">
+                                            <input type="checkbox" class="btn-check" name="interests"
+                                                   id="topic-{{ topic.id }}"
+                                                   autocomplete="off"
+                                                   value="{{ topic.id }}"
+                                                   {% if topic in user.student.interests.all %}checked{% endif %}>
+                                            <label class="btn btn-outline-secondary btn-sm"
+                                                   for="topic-{{ topic.id }}">{{ topic.name }}</label>
+                                        </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-primary">Save
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Update Subject Modal -->
 
 {% endblock content %}
 

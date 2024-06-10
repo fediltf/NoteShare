@@ -2,9 +2,11 @@
 {% load static file_extension info_value %}
 
 {% block extrastyle %}
-    .modal {
-    z-index: 99999 !important;
-    }
+    <style>
+        .modal {
+            z-index: 99999 !important;
+        }
+    </style>
 {% endblock extrastyle %}
 
 {% block content %}
@@ -99,13 +101,13 @@
                 </div>
             </div>
         </div>
-        <!-- File Upload Modal -->
+        <!-- Checkout Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1"
              aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
-                <form method="post" action="{% url 'dashboard:upload_file' %}"
-                      id="upload-file"
+                <form method="post" action="{% url 'cart:make_payment' %}"
                       enctype="multipart/form-data" class="modal-content">
+                    {% csrf_token %}
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Order Summary</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -151,14 +153,13 @@
                         </p>
 
                         <div class="ms-auto">
-                            <button type="button"
-                                        class="btn btn-sm btn-light btn-icon d-flex align-items-center me-2">
+                            <button type="submit" class="btn btn-sm btn-light btn-icon d-flex align-items-center me-2">
                                     <span class="btn-inner--icon me-1">
                                           <i class="fa fa-solid fa-credit-card fs-6"></i>
                                     </span>
-                                    <a type="button" class="btn-inner--text"
-                                       style="color: black; text-decoration: none;"> Make Payment</a>
-                                </button>
+                                <a type="button" class="btn-inner--text"
+                                   style="color: black; text-decoration: none;"> Make Payment</a>
+                            </button>
                         </div>
                     </div>
 

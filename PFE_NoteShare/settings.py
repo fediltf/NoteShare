@@ -20,6 +20,7 @@ SITE_ID = 3
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'django.contrib.humanize',
     'admin_corporate.apps.AdminCorporateConfig',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -61,6 +62,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'dashboard.context_processor.dashboard',
                 'cart.context_processors.cart'
             ],
         },
@@ -152,6 +154,7 @@ SOCIALACCOUNT_PROVIDERS = {
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '501993092894-i2jh49a1709mol6ufs3l50f7c50vtfot.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
@@ -163,5 +166,10 @@ LOGOUT_REDIRECT_URL = '/'
 
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
+
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
 
 # AUTH_USER_MODEL = 'dashboard.Student'

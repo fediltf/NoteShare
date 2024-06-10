@@ -3,6 +3,94 @@
 {% load file_extension %}
 {% block extrastyle %}
     <style>
+        {#<!-- Review Modal -->#}
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200&display=swap');
+
+
+        .cross {
+            padding: 10px;
+            color: #d6312d;
+            cursor: pointer;
+            font-size: 23px;
+        }
+
+        .cross i {
+
+            margin-top: -5px;
+            cursor: pointer;
+        }
+
+
+        .comment-box {
+            padding: 5px
+        }
+
+        .comment-area textarea {
+            resize: none;
+            border: 1px solid #669900
+        }
+
+        .form-control:focus {
+            color: #495057;
+            background-color: #fff;
+            border-color: #ffffff;
+            outline: 0;
+            box-shadow: 0 0 0 1px rgb(102, 153, 0) !important
+        }
+
+        .send {
+            color: #fff;
+            background-color: #669900;
+            border-color: #669900
+        }
+
+        .send:hover {
+            color: #fff;
+            background-color: #669900;
+            border-color: #669900
+        }
+
+        .rating {
+            display: inline-flex;
+            margin-top: -10px;
+            flex-direction: row-reverse;
+
+
+        }
+
+        .rating > input {
+            display: none
+        }
+
+        .rating > label {
+            position: relative;
+            width: 28px;
+            font-size: 35px;
+            color: #669900;
+            cursor: pointer;
+        }
+
+        .rating > label::before {
+            content: "\2605";
+            position: absolute;
+            opacity: 0
+        }
+
+        .rating > label:hover:before,
+        .rating > label:hover ~ label:before {
+            opacity: 1 !important
+        }
+
+        .rating > input:checked ~ label:before {
+            opacity: 1
+        }
+
+        .rating:hover > input:checked ~ label:before {
+            opacity: 0.4
+        }
+
+        {#<!-- EndReview Modal -->#}
+
         ul li {
             list-style-type: none;
         }
@@ -67,11 +155,12 @@
                                 <button type="button"
                                         class="btn btn-sm btn-dark btn-icon d-flex align-items-center me-2"
                                         data-bs-toggle="modal" data-bs-target="#exampleModal">
-                          <span class="btn-inner--icon">
-                              <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
-                                   fill="currentColor" class="d-block me-2">
-                                  <path d="M288 109.3V352c0 17.7-14.3 32-32 32s-32-14.3-32-32V109.3l-73.4 73.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l128-128c12.5-12.5 32.8-12.5 45.3 0l128 128c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L288 109.3zM64 352H192c0 35.3 28.7 64 64 64s64-28.7 64-64H448c35.3 0 64 28.7 64 64v32c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V416c0-35.3 28.7-64 64-64zM432 456a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></svg>
-                          </span>
+                                    <span class="btn-inner--icon">
+                                        <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"
+                                             viewBox="0 0 512 512"
+                                             fill="currentColor" class="d-block me-2">
+                                          <path d="M288 109.3V352c0 17.7-14.3 32-32 32s-32-14.3-32-32V109.3l-73.4 73.4c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l128-128c12.5-12.5 32.8-12.5 45.3 0l128 128c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L288 109.3zM64 352H192c0 35.3 28.7 64 64 64s64-28.7 64-64H448c35.3 0 64 28.7 64 64v32c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V416c0-35.3 28.7-64 64-64zM432 456a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/></svg>
+                                    </span>
                                     <span class="btn-inner--text">Import File</span>
                                 </button>
                             </div>
@@ -79,30 +168,29 @@
 
                     </div>
                     <div class="card-body px-0 py-0">
-                        <div class="border-bottom py-3 px-3 d-sm-flex align-items-center">
-                            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable1"
-                                       autocomplete="off" checked>
-                                <label class="btn btn-white px-3 mb-0" for="btnradiotable1">All</label>
-                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable2"
-                                       autocomplete="off">
-                                <label class="btn btn-white px-3 mb-0" for="btnradiotable2">Monitored</label>
-                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable3"
-                                       autocomplete="off">
-                                <label class="btn btn-white px-3 mb-0" for="btnradiotable3">Unmonitored</label>
-                            </div>
-                            <div class="input-group w-sm-25 ms-auto">
-                                            <span class="input-group-text text-body">
-                                              <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"
-                                                   fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                                   stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path>
-                                              </svg>
-                                            </span>
-                                <input type="text" class="form-control" placeholder="Search">
-                            </div>
-                        </div>
+{#                        <div class="border-bottom py-3 px-3 d-sm-flex align-items-center">#}
+{#                            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">#}
+{#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable1"#}
+{#                                       autocomplete="off" checked>#}
+{#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable1">All</label>#}
+{#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable2"#}
+{#                                       autocomplete="off">#}
+{#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable2">Monitored</label>#}
+{#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable3"#}
+{#                                       autocomplete="off">#}
+{#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable3">Unmonitored</label>#}
+{#                            </div>#}
+{#                            <div class="input-group w-sm-25 ms-auto">#}
+{#                                <span class="input-group-text text-body">#}
+{#                                    <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"#}
+{#                                         fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">#}
+{#                                        <path stroke-linecap="round" stroke-linejoin="round"#}
+{#                                              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path>#}
+{#                                    </svg>#}
+{#                                </span>#}
+{#                                <input type="text" class="form-control" placeholder="Search">#}
+{#                            </div>#}
+{#                        </div>#}
                         {% if files %}
                             {{ files|length|json_script:"files-count" }}
                             <div class="table-responsive p-0">
@@ -127,11 +215,11 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
-                                                    <div class="d-flex align-items-center">
+                                                    <div class="d-flex align-items-center" type="button" title="Click to Expand!">
                                                         {#                                                    <img src="{% static 'assets/img/team-2.jpg' %}"#}
                                                         {#                                                         class="avatar avatar-sm rounded-circle me-2" alt="user1">#}
                                                         <img src="{% url 'dashboard:first_page_preview' document_id=file.id %}"
-                                                             alt="First Page Preview" class="avatar avatar-2xl me-2">
+                                                             alt="First Page Preview" class="avatar avatar-2xl me-2 fst_page">
                                                     </div>
                                                     <!-- Image viewer modal -->
                                                     <div class="modal fade" id="viewImg" tabindex="-1" role="dialog"
@@ -144,9 +232,9 @@
                                                                     {#                                                                    <i class="fa-solid fa-circle-xmark fs-5"></i>#}
                                                                     {#                                                                </div>#}
                                                                     {#                                                                <h1 class="modal-title fs-5">View Image</h1>#}
-                                                                    <h5 class="modal-title" id="exampleModalLabel">
-                                                                        {{ file.id|display_value }}
-                                                                    </h5>
+{#                                                                    <h5 class="modal-title" id="exampleModalLabel">#}
+{#                                                                        {{ file.id|display_value }}#}
+{#                                                                    </h5>#}
                                                                     <button type="button" class="btn-close"
                                                                             data-bs-dismiss="modal"
                                                                             aria-label="Close"></button>
@@ -179,20 +267,20 @@
                                             </td>
                                             <td class="align-middle">
                                                 <div class="d-flex align-items-center actions">
-                                            <span data-bs-toggle="modal" data-bs-target="#info-{{ forloop.counter }}">
-                                                <i title="Info" class="fa fa-duotone fa-info text-success"></i>
-                                            </span>
-                                                    <div class="dot-separator mx-2">
-                                                    </div>
+                                                    <span data-bs-toggle="modal"
+                                                          data-bs-target="#info-{{ forloop.counter }}">
+                                                        <i title="Info" class="fa fa-duotone fa-info text-success"></i>
+                                                    </span>
+                                                    <div class="dot-separator mx-2"></div>
                                                     <span data-bs-toggle="modal"
                                                           data-bs-target="#file-{{ forloop.counter }}">
                                                       <i title="View" class="fa fa-duotone fa-eye text-primary"></i>
-                                            </span>
+                                                    </span>
                                                     <div class="dot-separator mx-2"></div>
                                                     <span data-bs-toggle="modal"
                                                           data-bs-target="#delete-{{ forloop.counter }}">
-                                                <i title="Delete" class="fa fa-solid fa-trash text-danger"></i>
-                                            </span>
+                                                        <i title="Delete" class="fa fa-solid fa-trash text-danger"></i>
+                                                    </span>
                                                 </div>
                                             </td>
                                         </tr>
@@ -208,13 +296,13 @@
                                                             id="staticBackdropLabel">{{ file.id | display_value }}</h1>
                                                         <span>
                                               <a href="{% url 'dashboard:download_file' file.id %}">
-                                                <i title="Download" class="fa fa-solid fa-download text-success fs-4"></i>
+                                                <i title="Download"
+                                                   class="fa fa-solid fa-download text-success fs-4"></i>
                                               </a>
                                             </span>
-                                                        <div class="" id="modal-close-btn-{{ forloop.counter }}"
-                                                             data-bs-dismiss="modal" aria-label="Close">
-                                                            <i class="fa-solid fa-circle-xmark fs-5"></i>
-                                                        </div>
+                                                        <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <iframe src="/media/{{ file.file_field.name }}" width="100%"
@@ -231,6 +319,9 @@
                                                     <div class="modal-header">
                                                         <h1 class="modal-title fs-5" id="exampleModalLabel">Delete
                                                             File</h1>
+                                                        <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         {{ file.id | display_value }}
@@ -253,6 +344,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- End Delete Modal -->
                                         <!-- Info Modal -->
                                         <div class="modal fade" id="info-{{ forloop.counter }}" tabindex="-1"
                                              aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -261,10 +353,9 @@
                                                     <div class="modal-header">
                                                         <h1 class="modal-title fs-5" id="exampleModalLabel">File
                                                             Info</h1>
-                                                        <div class="" id="modal-close-btn-{{ forloop.counter }}"
-                                                             data-bs-dismiss="modal" aria-label="Close">
-                                                            <i class="fa fa-solid fa-circle-xmark fs-5"></i>
-                                                        </div>
+                                                        <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <form action="{% url 'dashboard:save_info' file.id %}"
@@ -328,12 +419,354 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- End Info Modal -->
                                     {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
                             <div class="border-top py-3 px-3 d-flex align-items-center">
-                                <p class="font-weight-semibold mb-0 text-dark text-sm">Page 1 of 10</p>
+                                <p class="font-weight-semibold mb-0 text-dark text-sm">Page 1 of 1</p>
+                                <div class="ms-auto">
+                                    <button class="btn btn-sm btn-white mb-0">Previous</button>
+                                    <button class="btn btn-sm btn-white mb-0">Next</button>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="border-top py-3 px-3 d-flex align-items-center justify-content-center">
+                                <p class="font-weight-semibold mb-3 mt-3 text-dark text-lg">No files Found</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- Purchased Documents -->
+            <div class="col-12">
+                <div class="card border shadow-xs mb-4">
+                    <div class="card-header border-bottom pb-0">
+                        <div class="d-sm-flex align-items-center">
+                            <div>
+                                <h6 class="font-weight-semibold text-lg mb-0">My Purchases</h6>
+                                <p class="text-sm">See information about your purchased documents</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-body px-0 py-0">
+{#                        <div class="border-bottom py-3 px-3 d-sm-flex align-items-center">#}
+{#                            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">#}
+{#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable1"#}
+{#                                       autocomplete="off" checked>#}
+{#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable1">All</label>#}
+{#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable2"#}
+{#                                       autocomplete="off">#}
+{#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable2">Monitored</label>#}
+{#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable3"#}
+{#                                       autocomplete="off">#}
+{#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable3">Unmonitored</label>#}
+{#                            </div>#}
+{#                            <div class="input-group w-sm-25 ms-auto">#}
+{#                                            <span class="input-group-text text-body">#}
+{#                                              <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"#}
+{#                                                   fill="none" viewBox="0 0 24 24" stroke-width="1.5"#}
+{#                                                   stroke="currentColor">#}
+{#                                                <path stroke-linecap="round" stroke-linejoin="round"#}
+{#                                                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path>#}
+{#                                              </svg>#}
+{#                                            </span>#}
+{#                                <input type="text" class="form-control" placeholder="Search">#}
+{#                            </div>#}
+{#                        </div>#}
+                        {% if purchased_documents %}
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-0">
+                                    <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="text-secondary text-xs font-weight-semibold opacity-7">Document</th>
+                                        <th class="text-secondary text-xs font-weight-semibold opacity-7 ps-2">
+                                            Pages
+                                        </th>
+                                        <th class="text-center text-secondary text-xs font-weight-semibold opacity-7">
+                                            File Type
+                                        </th>
+                                        <th class="text-center text-secondary text-xs font-weight-semibold opacity-7">
+                                            Date
+                                        </th>
+                                        <th class="text-secondary opacity-7"></th>
+                                        <th class="text-secondary opacity-7"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for file in purchased_documents %}
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    <div class="d-flex align-items-center" type="button" title="Click to Expand!">
+                                                        <img src="{% url 'dashboard:first_page_preview' document_id=file.id %}"
+                                                             alt="First Page Preview" class="avatar avatar-2xl me-2 fst_page">
+                                                    </div>
+                                                    <!-- Image viewer modal -->
+                                                    <div class="modal fade" id="viewImg" tabindex="-1" role="dialog"
+                                                         style="display: none;">
+                                                        <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+{#                                                                    <h5 class="modal-title" id="exampleModalLabel">#}
+{#                                                                        {{ file.id|display_value }}#}
+{#                                                                    </h5>#}
+                                                                    <button type="button" class="btn-close"
+                                                                            data-bs-dismiss="modal"
+                                                                            aria-label="Close"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <div id="imgViewer" style="overflow-x: scroll;">
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- End Image viewer modal -->
+
+                                                    <div class="d-flex flex-column justify-content-center ms-1">
+                                                        <h6 class="mb-0 text-sm font-weight-semibold">
+                                                            {{ file.id|display_value }}
+                                                        </h6>
+                                                        <p class="text-sm text-secondary mb-0">
+                                                            by {{ file.user.username }}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="text-secondary text-sm font-weight-normal">{{ file.id|nb_pages }}</span>
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <span class="text-secondary text-sm font-weight-normal">{{ file.file_field.name|file_extension|cut:"."|upper }}</span>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <span class="text-secondary text-sm font-weight-normal">{{ file.upload_date|date:"F j, Y" }}</span>
+                                            </td>
+                                            <td class="align-middle text-center">
+                                                <button type="button"
+                                                        class="btn-icon d-flex align-items-center me-2 badge badge-sm border border-success text-success bg-secondary"
+                                                        data-bs-toggle="modal" data-bs-target="#reviewModal">
+                                                    <span class="btn-inner--icon">
+                                                        <svg width="12" height="12" xmlns="http://www.w3.org/2000/svg"
+                                                             viewBox="0 0 512 512"
+                                                             fill="currentColor" class="d-block">
+                                                          <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344V280H168c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V168c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H280v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/>
+                                                    </span>
+                                                    <span class="btn-inner--text ms-1">Add Review</span>
+                                                </button>
+                                            </td>
+                                            <td class="align-middle">
+                                                <div class="d-flex align-items-center actions">
+                                            <span data-bs-toggle="modal" data-bs-target="#purch-info-{{ file.id }}">
+                                                <i title="Info" class="fa fa-duotone fa-info text-success"></i>
+                                            </span>
+                                                    <div class="dot-separator mx-2">
+                                                    </div>
+                                                    <span data-bs-toggle="modal"
+                                                          data-bs-target="#purch-file-view-{{ file.id }}">
+                                                      <i title="View" class="fa fa-duotone fa-eye text-primary"></i>
+                                            </span>
+                                                    <div class="dot-separator mx-2"></div>
+                                                    <span data-bs-toggle="modal"
+                                                          data-bs-target="#purch-delete-{{ file.id }}">
+                                                <i title="Delete" class="fa fa-solid fa-trash text-danger"></i>
+                                            </span>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Review Modal -->
+                                        <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog"
+                                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="card-body text-center">
+                                                    <div class="comment-box text-center">
+                                                        <h4>Rate This Document</h4>
+                                                        <p>We highly value your input! Please take a moment to rate this
+                                                            document and share your feedback with us.</p>
+                                                        <form method="post"
+                                                              action="{% url 'dashboard:add_review' file.id %}"
+                                                        >
+                                                            {% csrf_token %}
+                                                        {% with review=student.id|student_review:file.id %}
+                                                            <div class="rating">
+                                                                {% for i in "54321" %}
+                                                                    <input type="radio" name="rating" value="{{ i }}"
+                                                                           id="rating-{{ i }}"
+                                                                           {% if review.rating|stringformat:"i" == i %}
+                                                                           checked{% endif %}
+                                                                    >
+                                                                    <label for="rating-{{ i }}">☆</label>
+                                                                {% endfor %}
+                                                            </div>
+                                                            <div class="comment-area">
+                                                                <textarea class="form-control" name="description"
+                                                                          placeholder="What is your view?"
+                                                                          rows="4"
+                                                                          required
+                                                                >
+                                                                    {{ review.description }}
+                                                                </textarea>
+                                                            </div>
+                                                        {% endwith %}
+                                                            <div class="text-center mt-4">
+                                                                <button type="submit" class="btn btn-success send px-5">
+                                                                    Send Review
+                                                                    <i class="fa fa-long-arrow-right ml-1"></i>
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- End Review Modal -->
+                                        <!-- Purchase View Modal -->
+                                        <div class="modal fade" id="purch-file-view-{{ file.id }}"
+                                             data-bs-backdrop="static"
+                                             data-bs-keyboard="false"
+                                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered modal-xl">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5"
+                                                            id="staticBackdropLabel">{{ file.id | display_value }}</h1>
+                                                        <span>
+                                              <a href="{% url 'dashboard:download_file' file.id %}">
+                                                <i title="Download"
+                                                   class="fa fa-solid fa-download text-success fs-4"></i>
+                                              </a>
+                                            </span>
+                                                        <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <iframe src="{{ file.file_field.path }}" width="100%"
+                                                                height="700px"></iframe>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Delete Modal -->
+                                        <div class="modal fade" id="purch-delete-{{ file.id }}" tabindex="-1"
+                                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Delete
+                                                            File</h1>
+                                                        <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        {{ file.id | display_value }}
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                                data-bs-dismiss="modal">
+                                                            Cancel
+                                                        </button>
+                                                        <form id="delete-form-{{ forloop.counter }}"
+                                                              action="{% url 'dashboard:delete_file' file.id %}"
+                                                              method="post">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="delete_confirmation"
+                                                                   value="true">
+                                                            <a class="btn btn-danger" href="#"
+                                                               onclick="document.getElementById('delete-form-{{ forloop.counter }}').submit(); return false;">Delete</a>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- End Delete Modal -->
+                                        <!-- Info Modal -->
+                                        <div class="modal fade" id="purch-info-{{ file.id }}" tabindex="-1"
+                                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5" id="exampleModalLabel">File
+                                                            Info</h1>
+                                                        <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{% url 'dashboard:save_info' file.id %}"
+                                                              method="post">
+                                                            {% csrf_token %}
+                                                            <div class="form-group mb-2">
+                                                                <label for="" class="form-label">Title</label>
+                                                                <input type="text" value="{{ file.id|title_value }}"
+                                                                       name="title"
+                                                                       class="form-control">
+                                                            </div>
+                                                            <div class="form-group mb-2">
+                                                                <label class="form-label" for="doctype">Course</label>
+                                                                <select class="form-select font-weight-light font-italic text-sm"
+                                                                        id="course"
+                                                                        name="course" required>
+                                                                    {% for topic in topics %}
+                                                                        <option value={{ topic.id }} {% if topic.id == file.id|course_value %}selected{% endif %}>{{ topic.name }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group mb-2">
+                                                                <label class="form-label" for="doctype">Document
+                                                                    Type</label>
+                                                                <select class="form-select font-weight-light font-italic text-sm"
+                                                                        id="doctype"
+                                                                        name="doctype" required>
+                                                                    <option selected>Select Document Type..</option>
+                                                                    {% for doctype in doctypes %}
+                                                                        <option value={{ doctype.id }} {% if doctype.id == file.id|doctype_value %}selected{% endif %}>{{ doctype.name }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group mb-2">
+                                                                <label class="form-label" for="uni">School</label>
+                                                                <select class="form-select font-weight-light font-italic text-sm"
+                                                                        id="uni" name="uni"
+                                                                        required>
+                                                                    <option selected>Select the School Document belongs
+                                                                        to..
+                                                                    </option>
+                                                                    {% for school in schools %}
+                                                                        <option value={{ school.id }} {% if school.id == file.id|uni_value %}selected{% endif %}>{{ school.name }}</option>
+                                                                    {% endfor %}
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group mb-2">
+                                                                <label for="" class="form-label">Description</label>
+                                                                <textarea
+                                                                        name="info" id="info"
+                                                                        class="form-control fw-lighter text-sm fst-italic"
+                                                                        rows="3" minlength="20"
+                                                                        value="{{ file.info }}" required></textarea>
+                                                            </div>
+                                                            <div class="d-flex justify-content-end">
+                                                                <button type="submit" class="btn btn-primary">Save
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- End Info Modal -->
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="border-top py-3 px-3 d-flex align-items-center">
+                                <p class="font-weight-semibold mb-0 text-dark text-sm">Page 1 of 1</p>
                                 <div class="ms-auto">
                                     <button class="btn btn-sm btn-white mb-0">Previous</button>
                                     <button class="btn btn-sm btn-white mb-0">Next</button>
@@ -348,72 +781,78 @@
                 </div>
             </div>
         </div>
-        <!-- File Upload Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
-                <form method="post" action="{% url 'dashboard:upload_file' %}" id="upload-file"
-                      enctype="multipart/form-data" class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Import Your File</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
+    </div>
 
-                        {% csrf_token %}
-                        <div class="file-loading">
-                            <input id="input-b6b" name="file" type="file">
-                        </div>
-                        <div id="kartik-file-errors"></div>
-                        <div class="form-group mb-2">
-                            <label for="" class="form-label">Title</label>
-                            <input type="text"
-                                   name="title"
-                                   class="form-control fw-lighter text-sm fst-italic"  placeholder="Enter Document Title.." required>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label class="form-label" for="doctype">Course</label>
-                            <select class="form-select font-weight-light font-italic text-sm" id="course"
-                                    name="course" required>
-                                <option selected>Select Course..</option>
-                                {% for topic in topics %}
-                                    <option value={{ topic.id }}>{{ topic.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label class="form-label" for="doctype">Document Type</label>
-                            <select class="form-select font-weight-light font-italic text-sm" id="doctype"
-                                    name="doctype" required>
-                                <option selected>Select Document Type..</option>
-                                {% for doctype in doctypes %}
-                                    <option value={{ doctype.id }}>{{ doctype.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label class="form-label" for="uni">School</label>
-                            <select class="form-select font-weight-light font-italic text-sm" id="uni" name="uni"
-                                    required>
-                                <option selected>Select the School Document belongs to..</option>
-                                {% for school in schools %}
-                                    <option value={{ school.id }}>{{ school.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group mb-2">
-                            <label for="" class="form-label">Description</label>
-                            <textarea
-                                    name="info" id="" class="form-control fw-lighter text-sm fst-italic" rows="3" minlength="20" placeholder="Enter Document Description.." required></textarea>
-                        </div>
+
+    <!-- File Upload Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
+            <form method="post" action="{% url 'dashboard:upload_file' %}" id="upload-file"
+                  enctype="multipart/form-data" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Import Your File</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    {% csrf_token %}
+                    <div class="file-loading">
+                        <input id="input-b6b" name="file" type="file">
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Import</button>
+                    <div id="kartik-file-errors"></div>
+                    <div class="form-group mb-2">
+                        <label for="" class="form-label">Title</label>
+                        <input type="text"
+                               name="title"
+                               class="form-control fw-lighter text-sm fst-italic"
+                               placeholder="Enter Document Title.." required>
                     </div>
-                </form>
-            </div>
+                    <div class="form-group mb-2">
+                        <label class="form-label" for="doctype">Course</label>
+                        <select class="form-select font-weight-light font-italic text-sm" id="course"
+                                name="course" required>
+                            <option selected>Select Course..</option>
+                            {% for topic in topics %}
+                                <option value={{ topic.id }}>{{ topic.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="form-label" for="doctype">Document Type</label>
+                        <select class="form-select font-weight-light font-italic text-sm" id="doctype"
+                                name="doctype" required>
+                            <option selected>Select Document Type..</option>
+                            {% for doctype in doctypes %}
+                                <option value={{ doctype.id }}>{{ doctype.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label class="form-label" for="uni">School</label>
+                        <select class="form-select font-weight-light font-italic text-sm" id="uni" name="uni"
+                                required>
+                            <option selected>Select the School Document belongs to..</option>
+                            {% for school in schools %}
+                                <option value={{ school.id }}>{{ school.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="" class="form-label">Description</label>
+                        <textarea
+                                name="info" id="" class="form-control fw-lighter text-sm fst-italic" rows="3"
+                                minlength="20" placeholder="Enter Document Description.." required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Import</button>
+                </div>
+            </form>
         </div>
-        {% include 'dashboard/includes/footer.html' %}
+    </div>
+    <!-- End File Upload Modal -->
+    {% include 'dashboard/includes/footer.html' %}
     </div>
 
 {% endblock %}
@@ -444,12 +883,12 @@
                 }
             }
         })
-        $('img').on('click', function (e) {
+        $('.fst_page').on('click', function (e) {
             $('#imgViewer').html('').append($(e.currentTarget).clone().removeClass('avatar').removeClass('avatar-2xl'))
             $('#viewImg').modal('show')
         })
 
-        $('img').each(function (i, e) {
+        $('.fst_page').each(function (i, e) {
             $(e).wrap('<div class="img-wrapper"></div>')
         })
         // Function to collapse the modal

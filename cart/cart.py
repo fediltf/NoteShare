@@ -20,7 +20,6 @@ class Cart():
     def __len__(self):
         return len(self.cart)
 
-
     def get_docs(self):
         # Get ids from cart
         doc_ids = self.cart.keys()
@@ -28,12 +27,12 @@ class Cart():
         return documents
 
     def delete(self, document):
-            document_id = str(document.id)
-            # Delete from dictionary/cart
-            if document_id in self.cart:
-                del self.cart[document_id]
+        document_id = str(document.id)
+        # Delete from dictionary/cart
+        if document_id in self.cart:
+            del self.cart[document_id]
 
-            self.session.modified = True
+        self.session.modified = True
 
     def cart_total(self):
         # Get document IDS
@@ -49,5 +48,10 @@ class Cart():
             key = int(key)
             for doc in documents:
                 if doc.id == key:
-                        total = total + (doc.cost)
+                    total = total + (doc.cost)
         return total
+
+    def clear(self):
+        self.cart = {}
+        self.session['session_key'] = {}
+        self.session.modified = True

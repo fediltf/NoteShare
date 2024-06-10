@@ -71,21 +71,6 @@
                                     {% endif %}
                                 </p>
                             </div>
-                            {#                            <div class="ms-auto d-flex">#}
-                            {#                                <button type="button" class="btn btn-sm btn-white me-2">#}
-                            {#                                    View all#}
-                            {#                                </button>#}
-                            {#                                <button type="button"#}
-                            {#                                        class="btn btn-sm btn-dark btn-icon d-flex align-items-center me-2">#}
-                            {#                  <span class="btn-inner--icon">#}
-                            {#                    <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"#}
-                            {#                         fill="currentColor" class="d-block me-2">#}
-                            {#                      <path d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z"/>#}
-                            {#                    </svg>#}
-                            {#                  </span>#}
-                            {#                                    <span class="btn-inner--text">Add member</span>#}
-                            {#                                </button>#}
-                            {#                            </div>#}
                         </div>
                     </div>
                     <div class="card-body px-0 py-0">
@@ -132,6 +117,9 @@
                                         <th class="text-center text-secondary text-xs font-weight-semibold opacity-7">
                                             Cost
                                         </th>
+                                        <th class="text-secondary text-xs font-weight-semibold opacity-7">
+                                            Reviews
+                                        </th>
                                         <th class="text-secondary opacity-7"></th>
                                         <th class="text-secondary opacity-7"></th>
 
@@ -146,7 +134,8 @@
                                                         {#                                                    <img src="{% static 'assets/img/team-2.jpg' %}"#}
                                                         {#                                                         class="avatar avatar-sm rounded-circle me-2" alt="user1">#}
                                                         <img src="{% url 'dashboard:first_page_preview' document_id=file.id %}"
-                                                             alt="First Page Preview" class="avatar avatar-2xl me-2">
+                                                             alt="First Page Preview"
+                                                             class="avatar avatar-2xl me-2">
                                                     </div>
                                                     <div class="d-flex flex-column justify-content-center ms-1">
                                                         <h6 class="mb-0 text-sm font-weight-semibold">
@@ -173,21 +162,95 @@
                                             <td class="align-middle text-center">
                                                 <span class="text-secondary text-sm font-weight-normal">{{ file.cost }} pt</span>
                                             </td>
-                                            <td>
+                                            <td class="align-middle text-center">
+                                                <a type="button" {% if file.average_rating > 0 %}
+                                                   title="See Document Reviews" data-bs-toggle="modal"
+                                                   data-bs-target="#reviewModal-{{ file.id }}"{% else %}
+                                                   title="No Reviews Yet" {% endif %}
+                                                   class="text-sm link-underline-warning text-warning opacity-75"
+                                                >
+                                                    {{ file.average_rating }}
+                                                    <i class="fa fa-solid fa-star"></i>
+                                                </a>
+                                            </td>
+                                            {% if file not in purchased_documents %}
+                                                {% if file.id|nb_pages_int > 1 %}
+                                                    <td>
                                             <span data-bs-toggle="modal" type="button"
                                                   data-bs-target="#file-{{ file.id }}">
                                                     <i title="Free Preview"
                                                        class="badge badge-sm border border-success text-success bg-success">Free Preview</i>
                                                 </span>
-                                            </td>
-                                            <td>
-                                                <button type="button" value="{{ file.id }}" id="add-cart"
-                                                        title="Add to Cart"
-                                                        class="fa fa-solid fa-shopping-cart text-success fs-5"
-                                                        style="background: none; border: none;">
-                                                </button>
-                                            </td>
+                                                    </td>
+                                                {% endif %}
+                                                <td>
+                                                    <button type="button" value="{{ file.id }}" id="add-cart"
+                                                            title="Add to Cart"
+                                                            class="fa fa-solid fa-shopping-cart text-success fs-5"
+                                                            style="background: none; border: none;">
+                                                    </button>
+                                                </td>
+                                            {% else %}
+                                                <td>
+                                                    <span class="badge badge-sm border border-success text-success bg-success">Purchased
+                                                    <i class="fa fa-solid fa-check "></i>
+                                                    </span>
+                                                </td>
+                                            {% endif %}
+
                                         </tr>
+                                        <!-- Review Modal -->
+                                        <div class="modal fade" id="reviewModal-{{ file.id }}" tabindex="-1"
+                                             role="dialog"
+                                             aria-labelledby="reviewModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg modal-dialog-centered"
+                                                 role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="reviewModalLabel">Reviews</h5>
+                                                        <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+
+                                                        <div class="row  d-flex justify-content-center mx-2">
+                                                            {% for review in file.id|document_reviews %}
+                                                                <div class="card p-3">
+
+                                                                    <div class="d-flex justify-content-between align-items-center">
+
+                                                                        <div class="user d-flex flex-row align-items-center">
+                                                                        <span>
+                                                                            <small class="font-weight-bold text-primary ms-2 me-1">{{ review.student }}:</small>
+                                                                            <small class="font-weight-bold">{{ review.description }}</small>
+                                                                        </span>
+                                                                        </div>
+                                                                        <small>{{ review.created_at|days_ago }}</small>
+
+                                                                    </div>
+
+
+                                                                    <div class="action d-flex justify-content-between mt-2 align-items-center">
+
+                                                                        <div class="reply px-4">
+                                                                        </div>
+
+                                                                        <div class="icons align-items-center text-warning">
+                                                                            {{ review.rating }}
+                                                                            <i class="fa fa-star"></i>
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- End Review Modal -->
                                         <!-- View Modal -->
                                         <div class="modal fade" id="file-{{ file.id }}"
                                              data-bs-backdrop="static"
