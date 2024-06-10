@@ -13,15 +13,21 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from io import BytesIO
-from nltk.stem import WordNetLemmatizer
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer, SnowballStemmer
 from PyPDF2 import PdfReader, PdfWriter
 from dashboard.models import Document, Review
+import spacy
+from spacy.lang.fr.stop_words import STOP_WORDS
+
+# Load the French language model
+nlp = spacy.load("fr_core_news_sm")
 
 nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('wordnet')
 nltk.download('averaged_perceptron_tagger')
-
+nltk.download('french_stemmer')
 
 stop_words = ("able", "about", "above", "abroad", "according", "accordingly", "across", "actually", "adj", "after",
               "afterwards", "again", "against", "ago", "ahead", "ain't", "all", "allow", "allows", "almost", "alone",
@@ -140,13 +146,13 @@ stop_words = ("able", "about", "above", "abroad", "according", "accordingly", "a
               "references", "figures", "tables", "appendix", "supplementary", "supporting", "materials")
 
 
-
 def calculate_points(coeff, length):
     base_points = 10
     subject_relevance = 20
     length_relevance = 0.001
     points = base_points + subject_relevance * coeff + length_relevance * length
     return int(points)
+
 
 def extract_text_ocr(upload_path):
     file_name = upload_path.split('\\')[-1].replace('.pdf', '') + '_ocr.pdf'
@@ -159,6 +165,7 @@ def extract_text_ocr(upload_path):
         for page in pdf.pages:
             text += page.extract_text(x_tolerance=2)
     return text, output_path
+
 
 def is_duplicate(user, shingles):
     existing_documents = Document.objects.all()
@@ -173,6 +180,7 @@ def is_duplicate(user, shingles):
             if similarity_score >= threshold:
                 return True
     return False
+
 
 def create_shingles(text, k=3):
     # Tokenize the text into words
@@ -193,6 +201,7 @@ def calculate_similarity(shingles1, shingles2):
     jaccard_similarity = len(shingles1.intersection(shingles2)) / len(shingles1.union(shingles2))
     return jaccard_similarity
 
+
 def get_keywords(text):
     # Remove symbols using regular expression
     text = re.sub(r'[^a-zA-Z\s]', '', text)
@@ -206,10 +215,36 @@ def get_keywords(text):
     word_counts = Counter(lemmatized_tokens)
     top_keywords = word_counts.most_common(50)  # Extract top 50 most frequent words
     print("Top Keywords:")
-    joined_kw = ""
+    joined_kw = " ".join([keyword for keyword, count in top_keywords])
     for keyword, count in top_keywords:
         print(f"- {keyword} ({count})")
-        joined_kw += keyword + " "
+    return joined_kw
+
+
+def get_keywords_french(text):
+    # Process the text with spacy
+    doc = nlp(text)
+
+    # Filter tokens, remove stop words, and keep only relevant POS tags
+    filtered_tokens = [
+        token.lemma_.lower() for token in doc
+        if token.text.lower() not in STOP_WORDS and token.pos_ in {'NOUN', 'VERB', 'ADJ', 'ADV'}
+    ]
+
+    # Count word frequencies
+    word_counts = Counter(filtered_tokens)
+
+    # Extract top 50 most frequent words
+    top_keywords = word_counts.most_common(50)
+
+    print("Top Keywords:")
+
+    # Join the top keywords into a single string
+    joined_kw = " ".join([keyword for keyword, count in top_keywords])
+
+    for keyword, count in top_keywords:
+        print(f"- {keyword} ({count})")
+
     return joined_kw
 
 

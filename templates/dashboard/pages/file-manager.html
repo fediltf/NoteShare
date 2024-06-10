@@ -168,29 +168,29 @@
 
                     </div>
                     <div class="card-body px-0 py-0">
-{#                        <div class="border-bottom py-3 px-3 d-sm-flex align-items-center">#}
-{#                            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">#}
-{#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable1"#}
-{#                                       autocomplete="off" checked>#}
-{#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable1">All</label>#}
-{#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable2"#}
-{#                                       autocomplete="off">#}
-{#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable2">Monitored</label>#}
-{#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable3"#}
-{#                                       autocomplete="off">#}
-{#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable3">Unmonitored</label>#}
-{#                            </div>#}
-{#                            <div class="input-group w-sm-25 ms-auto">#}
-{#                                <span class="input-group-text text-body">#}
-{#                                    <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"#}
-{#                                         fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">#}
-{#                                        <path stroke-linecap="round" stroke-linejoin="round"#}
-{#                                              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path>#}
-{#                                    </svg>#}
-{#                                </span>#}
-{#                                <input type="text" class="form-control" placeholder="Search">#}
-{#                            </div>#}
-{#                        </div>#}
+                        {#                        <div class="border-bottom py-3 px-3 d-sm-flex align-items-center">#}
+                        {#                            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">#}
+                        {#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable1"#}
+                        {#                                       autocomplete="off" checked>#}
+                        {#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable1">All</label>#}
+                        {#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable2"#}
+                        {#                                       autocomplete="off">#}
+                        {#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable2">Monitored</label>#}
+                        {#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable3"#}
+                        {#                                       autocomplete="off">#}
+                        {#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable3">Unmonitored</label>#}
+                        {#                            </div>#}
+                        {#                            <div class="input-group w-sm-25 ms-auto">#}
+                        {#                                <span class="input-group-text text-body">#}
+                        {#                                    <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"#}
+                        {#                                         fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">#}
+                        {#                                        <path stroke-linecap="round" stroke-linejoin="round"#}
+                        {#                                              d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path>#}
+                        {#                                    </svg>#}
+                        {#                                </span>#}
+                        {#                                <input type="text" class="form-control" placeholder="Search">#}
+                        {#                            </div>#}
+                        {#                        </div>#}
                         {% if files %}
                             {{ files|length|json_script:"files-count" }}
                             <div class="table-responsive p-0">
@@ -215,11 +215,13 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
-                                                    <div class="d-flex align-items-center" type="button" title="Click to Expand!">
+                                                    <div class="d-flex align-items-center" type="button"
+                                                         title="Click to Expand!">
                                                         {#                                                    <img src="{% static 'assets/img/team-2.jpg' %}"#}
                                                         {#                                                         class="avatar avatar-sm rounded-circle me-2" alt="user1">#}
                                                         <img src="{% url 'dashboard:first_page_preview' document_id=file.id %}"
-                                                             alt="First Page Preview" class="avatar avatar-2xl me-2 fst_page">
+                                                             alt="First Page Preview"
+                                                             class="avatar avatar-2xl me-2 fst_page">
                                                     </div>
                                                     <!-- Image viewer modal -->
                                                     <div class="modal fade" id="viewImg" tabindex="-1" role="dialog"
@@ -232,9 +234,9 @@
                                                                     {#                                                                    <i class="fa-solid fa-circle-xmark fs-5"></i>#}
                                                                     {#                                                                </div>#}
                                                                     {#                                                                <h1 class="modal-title fs-5">View Image</h1>#}
-{#                                                                    <h5 class="modal-title" id="exampleModalLabel">#}
-{#                                                                        {{ file.id|display_value }}#}
-{#                                                                    </h5>#}
+                                                                    {#                                                                    <h5 class="modal-title" id="exampleModalLabel">#}
+                                                                    {#                                                                        {{ file.id|display_value }}#}
+                                                                    {#                                                                    </h5>#}
                                                                     <button type="button" class="btn-close"
                                                                             data-bs-dismiss="modal"
                                                                             aria-label="Close"></button>
@@ -452,30 +454,30 @@
 
                     </div>
                     <div class="card-body px-0 py-0">
-{#                        <div class="border-bottom py-3 px-3 d-sm-flex align-items-center">#}
-{#                            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">#}
-{#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable1"#}
-{#                                       autocomplete="off" checked>#}
-{#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable1">All</label>#}
-{#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable2"#}
-{#                                       autocomplete="off">#}
-{#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable2">Monitored</label>#}
-{#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable3"#}
-{#                                       autocomplete="off">#}
-{#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable3">Unmonitored</label>#}
-{#                            </div>#}
-{#                            <div class="input-group w-sm-25 ms-auto">#}
-{#                                            <span class="input-group-text text-body">#}
-{#                                              <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"#}
-{#                                                   fill="none" viewBox="0 0 24 24" stroke-width="1.5"#}
-{#                                                   stroke="currentColor">#}
-{#                                                <path stroke-linecap="round" stroke-linejoin="round"#}
-{#                                                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path>#}
-{#                                              </svg>#}
-{#                                            </span>#}
-{#                                <input type="text" class="form-control" placeholder="Search">#}
-{#                            </div>#}
-{#                        </div>#}
+                        {#                        <div class="border-bottom py-3 px-3 d-sm-flex align-items-center">#}
+                        {#                            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">#}
+                        {#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable1"#}
+                        {#                                       autocomplete="off" checked>#}
+                        {#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable1">All</label>#}
+                        {#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable2"#}
+                        {#                                       autocomplete="off">#}
+                        {#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable2">Monitored</label>#}
+                        {#                                <input type="radio" class="btn-check" name="btnradiotable" id="btnradiotable3"#}
+                        {#                                       autocomplete="off">#}
+                        {#                                <label class="btn btn-white px-3 mb-0" for="btnradiotable3">Unmonitored</label>#}
+                        {#                            </div>#}
+                        {#                            <div class="input-group w-sm-25 ms-auto">#}
+                        {#                                            <span class="input-group-text text-body">#}
+                        {#                                              <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px"#}
+                        {#                                                   fill="none" viewBox="0 0 24 24" stroke-width="1.5"#}
+                        {#                                                   stroke="currentColor">#}
+                        {#                                                <path stroke-linecap="round" stroke-linejoin="round"#}
+                        {#                                                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"></path>#}
+                        {#                                              </svg>#}
+                        {#                                            </span>#}
+                        {#                                <input type="text" class="form-control" placeholder="Search">#}
+                        {#                            </div>#}
+                        {#                        </div>#}
                         {% if purchased_documents %}
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
@@ -500,9 +502,11 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
-                                                    <div class="d-flex align-items-center" type="button" title="Click to Expand!">
+                                                    <div class="d-flex align-items-center" type="button"
+                                                         title="Click to Expand!">
                                                         <img src="{% url 'dashboard:first_page_preview' document_id=file.id %}"
-                                                             alt="First Page Preview" class="avatar avatar-2xl me-2 fst_page">
+                                                             alt="First Page Preview"
+                                                             class="avatar avatar-2xl me-2 fst_page">
                                                     </div>
                                                     <!-- Image viewer modal -->
                                                     <div class="modal fade" id="viewImg" tabindex="-1" role="dialog"
@@ -510,9 +514,9 @@
                                                         <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
-{#                                                                    <h5 class="modal-title" id="exampleModalLabel">#}
-{#                                                                        {{ file.id|display_value }}#}
-{#                                                                    </h5>#}
+                                                                    {#                                                                    <h5 class="modal-title" id="exampleModalLabel">#}
+                                                                    {#                                                                        {{ file.id|display_value }}#}
+                                                                    {#                                                                    </h5>#}
                                                                     <button type="button" class="btn-close"
                                                                             data-bs-dismiss="modal"
                                                                             aria-label="Close"></button>
@@ -532,7 +536,7 @@
                                                             {{ file.id|display_value }}
                                                         </h6>
                                                         <p class="text-sm text-secondary mb-0">
-                                                            by {{ file.user.username }}</p>
+                                                            by {{ file.user.user.username }}</p>
                                                     </div>
                                                 </div>
                                             </td>
@@ -554,6 +558,7 @@
                                                              viewBox="0 0 512 512"
                                                              fill="currentColor" class="d-block">
                                                           <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM232 344V280H168c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V168c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H280v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z"/>
+                                                        </svg>
                                                     </span>
                                                     <span class="btn-inner--text ms-1">Add Review</span>
                                                 </button>
@@ -581,73 +586,75 @@
                                         <!-- Review Modal -->
                                         <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog"
                                              aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-dialog-centered" role="document">
-                                            <div class="modal-content">
-                                                <div class="card-body text-center">
-                                                    <div class="comment-box text-center">
-                                                        <h4>Rate This Document</h4>
-                                                        <p>We highly value your input! Please take a moment to rate this
-                                                            document and share your feedback with us.</p>
-                                                        <form method="post"
-                                                              action="{% url 'dashboard:add_review' file.id %}"
-                                                        >
-                                                            {% csrf_token %}
-                                                        {% with review=student.id|student_review:file.id %}
-                                                            <div class="rating">
-                                                                {% for i in "54321" %}
-                                                                    <input type="radio" name="rating" value="{{ i }}"
-                                                                           id="rating-{{ i }}"
-                                                                           {% if review.rating|stringformat:"i" == i %}
-                                                                           checked{% endif %}
-                                                                    >
-                                                                    <label for="rating-{{ i }}">☆</label>
-                                                                {% endfor %}
-                                                            </div>
-                                                            <div class="comment-area">
+                                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                                <div class="modal-content">
+                                                    <div class="card-body text-center">
+                                                        <div class="comment-box text-center">
+                                                            <h4>Rate This Document</h4>
+                                                            <p>We highly value your input! Please take a moment to rate
+                                                                this
+                                                                document and share your feedback with us.</p>
+                                                            <form method="post"
+                                                                  action="{% url 'dashboard:add_review' file.id %}"
+                                                            >
+                                                                {% csrf_token %}
+                                                                {% with review=student.id|student_review:file.id %}
+                                                                    <div class="rating">
+                                                                        {% for i in "54321" %}
+                                                                            <input type="radio" name="rating"
+                                                                                   value="{{ i }}"
+                                                                                   id="rating-{{ i }}"
+                                                                                    {% if review.rating|stringformat:"i" == i %}
+                                                                                   checked{% endif %}
+                                                                            >
+                                                                            <label for="rating-{{ i }}">☆</label>
+                                                                        {% endfor %}
+                                                                    </div>
+                                                                    <div class="comment-area">
                                                                 <textarea class="form-control" name="description"
                                                                           placeholder="What is your view?"
                                                                           rows="4"
                                                                           required
-                                                                >
-                                                                    {{ review.description }}
-                                                                </textarea>
-                                                            </div>
-                                                        {% endwith %}
-                                                            <div class="text-center mt-4">
-                                                                <button type="submit" class="btn btn-success send px-5">
-                                                                    Send Review
-                                                                    <i class="fa fa-long-arrow-right ml-1"></i>
-                                                                </button>
-                                                            </div>
-                                                        </form>
+                                                                >{{ review.description }}</textarea>
+                                                                    </div>
+                                                                {% endwith %}
+                                                                <div class="text-center mt-4">
+                                                                    <button type="submit"
+                                                                            class="btn btn-success send px-5">
+                                                                        Send Review
+                                                                        <i class="fa fa-long-arrow-right ml-1"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <!-- End Review Modal -->
-                                        <!-- Purchase View Modal -->
-                                        <div class="modal fade" id="purch-file-view-{{ file.id }}"
-                                             data-bs-backdrop="static"
-                                             data-bs-keyboard="false"
-                                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered modal-xl">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h1 class="modal-title fs-5"
-                                                            id="staticBackdropLabel">{{ file.id | display_value }}</h1>
-                                                        <span>
+                                            <!-- End Review Modal -->
+                                            <!-- Purchase View Modal -->
+                                            <div class="modal fade" id="purch-file-view-{{ file.id }}"
+                                                 data-bs-backdrop="static"
+                                                 data-bs-keyboard="false"
+                                                 tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-xl">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5"
+                                                                id="staticBackdropLabel">{{ file.id | display_value }}</h1>
+                                                            <span>
                                               <a href="{% url 'dashboard:download_file' file.id %}">
                                                 <i title="Download"
                                                    class="fa fa-solid fa-download text-success fs-4"></i>
                                               </a>
                                             </span>
-                                                        <button type="button" class="btn-close"
-                                                                data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <iframe src="{{ file.file_field.path }}" width="100%"
-                                                                height="700px"></iframe>
+                                                            <button type="button" class="btn-close"
+                                                                    data-bs-dismiss="modal"
+                                                                    aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <iframe src="{{ file.file_field.path }}" width="100%"
+                                                                    height="700px"></iframe>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

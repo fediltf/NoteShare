@@ -1,9 +1,11 @@
 import base64
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.db.models import Q
 from django.http import Http404
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 from langdetect import detect
 from dashboard.models import *
 from .utils import *
@@ -19,7 +21,7 @@ def index(request):
         if request.user.is_superuser:
             students = Student.objects.all()
             transactions = Transaction.objects.all().order_by('transaction_date')
-            files = Document.objects.all()
+            files = Document.objects.all().order_by('upload_date')
             reviews = Review.objects.all()
             context['segment'] = 'Admin Dashboard'
             context['transactions'] = transactions
@@ -223,8 +225,11 @@ def upload_file(request):
             text, output_path = extract_text_ocr(file_path)
             shingles = create_shingles(text)
             pickled_shingles = pickle.dumps(shingles)
-            keywords = get_keywords(text)
             lang = detect(text)
+            if lang=='fr':
+                keywords = get_keywords_french(text)
+            else:
+                keywords = get_keywords(text)
             length = len(text)
             coeff = float(course.coef)
             awarded_points = calculate_points(coeff, length)
@@ -284,7 +289,8 @@ def search(request):
         files = []
 
     nb_files = files.count()
-    context = {'files': files, 'query': query, 'nb_files': nb_files, 'purchased_documents': purchased_documents}
+
+    context = {'files': files, 'query': query, 'nb_files': nb_files, 'purchased_documents': purchased_documents, 'segment':'search'}
 
     return render(request, 'dashboard/pages/search.html', context)
 
@@ -334,3 +340,24 @@ def add_review(request, document_id):
         else:
             messages.error(request, 'Both rating and description are required.')
     return redirect(request.META.get('HTTP_REFERER'))
+
+
+def delete_profile(request, user_id):
+    if request.user.is_superuser:
+        student = get_object_or_404(User, id=user_id)
+        if request.method == 'POST':
+            student.is_active = False
+            student.save()
+            messages.success(request,
+                             "Profile successfully disabled!")
+        return redirect(request.META.get('HTTP_REFERER'))
+
+
+def delete_review(request, review_id):
+    if request.user.is_superuser:
+        review = get_object_or_404(Review, id=review_id)
+        if request.method == 'POST':
+            review.delete()
+            messages.success(request,
+                             "Review Deleted successfully!")
+        return redirect(request.META.get('HTTP_REFERER'))

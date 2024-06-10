@@ -88,7 +88,7 @@ class Document(models.Model):
             return None
 
     def __str__(self):
-        return str(self.id)
+        return str(self.title)
 
 class Transaction(models.Model):
     TRANSACTION_TYPE_CHOICES = [

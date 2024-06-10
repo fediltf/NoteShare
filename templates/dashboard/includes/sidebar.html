@@ -12,6 +12,7 @@
     </div>
     <div class="collapse navbar-collapse px-4  w-auto " id="sidenav-collapse-main">
         <ul class="navbar-nav">
+        {% if user.is_superuser %}
             <li class="nav-item">
                     <a class="nav-link {% if 'dashboard' in segment %}active{% endif %}"
                        href="{% url 'dashboard:index' %}">
@@ -38,6 +39,7 @@
                 <span class="nav-link-text ms-1">Dashboard</span>
                 </a>
             </li>
+        {% endif %}
         {% if not user.is_superuser %}
             <li class="nav-item">
                 <a class="nav-link {% if 'library' in segment %}active{% endif %}"
