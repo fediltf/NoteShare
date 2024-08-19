@@ -280,7 +280,7 @@
                                                     </span>
                                                     <div class="dot-separator mx-2"></div>
                                                     <span data-bs-toggle="modal"
-                                                          data-bs-target="#delete-{{ forloop.counter }}">
+                                                          data-bs-target="#delete-{{ file.id }}">
                                                         <i title="Delete" class="fa fa-solid fa-trash text-danger"></i>
                                                     </span>
                                                 </div>
@@ -314,7 +314,7 @@
                                             </div>
                                         </div>
                                         <!-- Delete Modal -->
-                                        <div class="modal fade" id="delete-{{ forloop.counter }}" tabindex="-1"
+                                        <div class="modal fade" id="delete-{{ file.id }}" tabindex="-1"
                                              aria-labelledby="exampleModalLabel" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
@@ -333,14 +333,14 @@
                                                                 data-bs-dismiss="modal">
                                                             Cancel
                                                         </button>
-                                                        <form id="delete-form-{{ forloop.counter }}"
+                                                        <form id="delete-form-{{ file.id }}"
                                                               action="{% url 'dashboard:delete_file' file.id %}"
                                                               method="post">
                                                             {% csrf_token %}
                                                             <input type="hidden" name="delete_confirmation"
                                                                    value="true">
                                                             <a class="btn btn-danger" href="#"
-                                                               onclick="document.getElementById('delete-form-{{ forloop.counter }}').submit(); return false;">Delete</a>
+                                                               onclick="document.getElementById('delete-form-{{ file.id }}').submit(); return false;">Delete</a>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -630,31 +630,31 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!-- End Review Modal -->
-                                            <!-- Purchase View Modal -->
-                                            <div class="modal fade" id="purch-file-view-{{ file.id }}"
-                                                 data-bs-backdrop="static"
-                                                 data-bs-keyboard="false"
-                                                 tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered modal-xl">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h1 class="modal-title fs-5"
-                                                                id="staticBackdropLabel">{{ file.id | display_value }}</h1>
-                                                            <span>
+                                        </div>
+                                        <!-- End Review Modal -->
+                                        <!-- Purchase View Modal -->
+                                        <div class="modal fade" id="purch-file-view-{{ file.id }}"
+                                             data-bs-backdrop="static"
+                                             data-bs-keyboard="false"
+                                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered modal-xl">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h1 class="modal-title fs-5"
+                                                            id="staticBackdropLabel">{{ file.id | display_value }}</h1>
+                                                        <span>
                                               <a href="{% url 'dashboard:download_file' file.id %}">
                                                 <i title="Download"
                                                    class="fa fa-solid fa-download text-success fs-4"></i>
                                               </a>
                                             </span>
-                                                            <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="modal"
-                                                                    aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <iframe src="{{ file.file_field.path }}" width="100%"
-                                                                    height="700px"></iframe>
-                                                        </div>
+                                                        <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal"
+                                                                aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <iframe src="/media/{{ file.file_field.name }}" width="100%"
+                                                                height="700px"></iframe>
                                                     </div>
                                                 </div>
                                             </div>
@@ -679,14 +679,14 @@
                                                                 data-bs-dismiss="modal">
                                                             Cancel
                                                         </button>
-                                                        <form id="delete-form-{{ forloop.counter }}"
-                                                              action="{% url 'dashboard:delete_file' file.id %}"
+                                                        <form id="delete-form-{{ file.id }}"
+                                                              action="{% url 'dashboard:delete_purchase' file.id %}"
                                                               method="post">
                                                             {% csrf_token %}
                                                             <input type="hidden" name="delete_confirmation"
                                                                    value="true">
                                                             <a class="btn btn-danger" href="#"
-                                                               onclick="document.getElementById('delete-form-{{ forloop.counter }}').submit(); return false;">Delete</a>
+                                                               onclick="document.getElementById('delete-form-{{ file.id }}').submit(); return false;">Delete</a>
                                                         </form>
                                                     </div>
                                                 </div>
@@ -792,7 +792,8 @@
 
 
     <!-- File Upload Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-lg modal-fullscreen-lg-down">
             <form method="post" action="{% url 'dashboard:upload_file' %}" id="upload-file"
                   enctype="multipart/form-data" class="modal-content">

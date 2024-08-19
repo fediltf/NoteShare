@@ -237,7 +237,7 @@ def upload_file(request):
             b64_pickled_shingles = base64.b64encode(pickled_shingles).decode()
             existing_documents = Document.objects.all()
             if is_duplicate(user, shingles):
-                messages.warning(request, 'File is too similar to an existing file.')
+                messages.warning(request, 'File is too similar to an existing file! Try Another')
                 return redirect(request.META.get('HTTP_REFERER'))
             cost = awarded_points + 10
             # Create Document and Shingle objects
@@ -300,12 +300,14 @@ def update_profile(request):
     if request.method == 'POST':
         fst_name = request.POST.get('fst_name')
         lst_name = request.POST.get('lst_name')
+        username = request.POST.get('username')
         selected_school_id = request.POST.get('uni')
         selected_interests = request.POST.getlist('interests')
         user = request.user
         student = Student.objects.get(user=request.user)
         user.first_name = fst_name
         user.last_name = lst_name
+        user.username = username
         student.school_id = selected_school_id
         student.interests.clear()
         for interest_id in selected_interests:
@@ -360,4 +362,15 @@ def delete_review(request, review_id):
             review.delete()
             messages.success(request,
                              "Review Deleted successfully!")
+        return redirect(request.META.get('HTTP_REFERER'))
+
+
+def delete_purchase(request, document_id):
+    student = request.user.student
+    document = get_object_or_404(Document, id=document_id)
+    if request.method == 'POST':
+        if document in student.purchased_documents.all():
+            student.purchased_documents.remove(document)
+        messages.success(request,
+                         "Purchase Removed successfully!")
         return redirect(request.META.get('HTTP_REFERER'))

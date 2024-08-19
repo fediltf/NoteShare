@@ -100,7 +100,7 @@
                                 </th>
                                 <th class="text-secondary text-xs font-weight-semibold opacity-7 ps-2">Type</th>
                                 <th class="text-secondary text-xs font-weight-semibold opacity-7 ps-2">Document</th>
-                                <th class="text-secondary text-xs font-weight-semibold opacity-7 ps-2">Amount</th>
+                                <th class="text-center text-secondary text-xs font-weight-semibold opacity-7 ps-2">Amount</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -111,7 +111,7 @@
                                     </td>
                                     <td>
                                         <span class="badge badge-sm border
-                                             border-secondary text-secondary bg-secondary
+                                             border-info text-dark bg-info
                                         border-radius-sm">
                                           {{ transaction.transaction_type }}
                                         </span>
@@ -119,14 +119,14 @@
                                     <td>
                                         <span class="text-sm">{{ transaction.document.id|display_value }}</span>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         {% if transaction.transaction_type == 'upload' %}
-                                            <span class="badge badge-sm border border-success text-success bg-success border-radius-sm">
+                                            <span class="badge rounded-pill badge-sm border border-success text-success bg-success border-radius-sm">
                                           +
                                                 {{ transaction.amount }}
                                         </span>
                                         {% else %}
-                                            <span class="badge badge-sm border border-danger text-danger bg-danger border-radius-sm">
+                                            <span class="badge rounded-pill badge-sm border border-danger text-danger bg-danger border-radius-sm">
                                                 -
                                                 {{ transaction.amount }}
                                         </span>

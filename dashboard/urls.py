@@ -12,6 +12,7 @@ urlpatterns = [
                   path('file-manager/', views.file_manager, name='file_manager'),
                   path('delete-file/<str:document_id>/', views.delete_file, name='delete_file'),
                   path('download-file/<str:document_id>/', views.download_file, name='download_file'),
+                  path('delete-purchase/<str:document_id>/', views.delete_purchase, name='delete_purchase'),
                   path('delete-school/<str:school_id>/', views.delete_school, name='delete_school'),
                   path('delete-review/<str:review_id>/', views.delete_review, name='delete_review'),
                   path('delete-doct/<str:doct_id>/', views.delete_doct, name='delete_doct'),

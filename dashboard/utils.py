@@ -209,7 +209,7 @@ def get_keywords(text):
     lower_tokens = [token.lower() for token in tokens]
     filtered_tokens = [token for token in lower_tokens if token not in stop_words]
     tagged_tokens = nltk.pos_tag(filtered_tokens)
-    refiltered_tokens = [token for token, tag in tagged_tokens if tag in ['NN', 'VB', 'JJ', 'RB']]
+    refiltered_tokens = [token for token, tag in tagged_tokens if tag in ['NN', 'VB', 'JJ', 'RB'] and len(token) > 3]
     lemmatizer = WordNetLemmatizer()
     lemmatized_tokens = [lemmatizer.lemmatize(token) for token in refiltered_tokens]
     word_counts = Counter(lemmatized_tokens)
@@ -228,7 +228,7 @@ def get_keywords_french(text):
     # Filter tokens, remove stop words, and keep only relevant POS tags
     filtered_tokens = [
         token.lemma_.lower() for token in doc
-        if token.text.lower() not in STOP_WORDS and token.pos_ in {'NOUN', 'VERB', 'ADJ', 'ADV'}
+        if token.text.lower() not in STOP_WORDS and token.pos_ in {'NOUN', 'VERB', 'ADJ', 'ADV'} and len(token.text) > 3
     ]
 
     # Count word frequencies
