@@ -19,6 +19,10 @@ ALLOWED_HOSTS = []
 SITE_ID = 3
 
 INSTALLED_APPS = [
+    "daphne",
+    'custom_account',
+    'dashboard',
+    'cart',
     'django.contrib.admin',
     'django.contrib.humanize',
     'admin_corporate.apps.AdminCorporateConfig',
@@ -33,9 +37,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'custom_account',
-    'dashboard',
-    'cart'
+    'chat_app',
+    "channels",
 ]
 
 MIDDLEWARE = [
@@ -69,6 +72,7 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = 'PFE_NoteShare.asgi.application'
 WSGI_APPLICATION = 'PFE_NoteShare.wsgi.application'
 
 # Database
@@ -166,10 +170,17 @@ LOGOUT_REDIRECT_URL = '/'
 
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
-
-
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
+XS_SHARING_ALLOWED_METHODS = ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE']
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+        # "BACKEND": "channels.layers.InMemoryChannelLayer"
+    },
+}
 # AUTH_USER_MODEL = 'dashboard.Student'
