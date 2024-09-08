@@ -14,7 +14,8 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from io import BytesIO
 from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer, SnowballStemmer
+from nltk.stem import WordNetLemmatizer
+from nltk.stem.snowball import SnowballStemmer
 from PyPDF2 import PdfReader, PdfWriter
 from dashboard.models import Document, Review
 import spacy
@@ -27,7 +28,7 @@ nltk.download('stopwords')
 nltk.download('punkt')
 nltk.download('wordnet')
 nltk.download('averaged_perceptron_tagger')
-nltk.download('french_stemmer')
+french_stemmer = SnowballStemmer("french")
 
 stop_words = ("able", "about", "above", "abroad", "according", "accordingly", "across", "actually", "adj", "after",
               "afterwards", "again", "against", "ago", "ahead", "ain't", "all", "allow", "allows", "almost", "alone",

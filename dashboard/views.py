@@ -1,9 +1,6 @@
-import base64
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.postgres.search import SearchVector, SearchQuery
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import redirect, get_object_or_404, render
 from langdetect import detect

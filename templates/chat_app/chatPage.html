@@ -1,53 +1,17 @@
- <!DOCTYPE html>
-<html>
-
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+{% extends 'dashboard/layouts/base.html' %}
+{% load static %}
+{% block extrastyle %}
     <style>
         body {
             font-family: Arial, sans-serif;
         }
-
-        .chat-container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding: 10px;
-        }
-
-        .chat-header {
-            text-align: center;
-            background-color: #075e54;
-            color: #fff;
-            padding: 10px;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
-
-        .chat-header h1 {
-            font-size: 24px;
-        }
-
-        .chat-logout {
-            text-align: right;
-            padding: 10px;
-        }
-
-        .chat-logout a {
-            text-decoration: none;
-            color: #075e54;
-            font-weight: bold;
-        }
-
-        .chat-logout a:hover {
-            text-decoration: underline;
-        }
-
+        
         .chat__item__container {
             background-color: #f5f5f5;
             padding: 10px;
             border-radius: 10px;
-            height: 300px;
-            max-height: 300px;
+            {#height: 300px;#}
+            max-height: 555px;
             /* Set a maximum height for the chat container */
             overflow-y: auto;
             /* Add a vertical scrollbar when needed */
@@ -69,7 +33,7 @@
 
         #id_message_send_button {
             padding: 5px 10px;
-            background-color: #075e54;
+            background-color: #007e9b;
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -87,7 +51,7 @@
         }
 
         .chat-message.right {
-                background-color: black;
+            background-color: #808080;
             width: 80%;
             float: right;
             clear: both;
@@ -96,7 +60,7 @@
         }
 
         .chat-message.left {
-            background-color: #075e54;
+            background-color: #007e9b;
             width: 80%;
             float: left;
             clear: both;
@@ -123,31 +87,49 @@
             right: 5px;
         }
     </style>
-</head>
+{% endblock extrastyle %}
 
-<body>
-    <div class="chat-container">
-        <div class="chat-header">
-            <h1>Chit-Chat <i class="fas fa-comment"></i></h1>
-        </div>
-        <div class="chat-logout">
-            {% if request.user.is_authenticated %}
-            <div style="float: left;font-weight: bold; color: #036358;">{{ request.user|title }} </div>
-            <div style="float: right;"><a href="{% url 'account:logout' %}"><i class="fas fa-sign-out-alt"></i></a>
+
+{% block content %}
+    <div class="container-fluid py-4 px-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="card border shadow-xs mb-4">
+                    <div class="card-header border-bottom pb-0">
+                        <div class="d-sm-flex align-items-center">
+                            <div>
+                                <h6 class="mb-0" style="float: left;font-weight: bold; color: #009483;">
+                                    {{ request.user|title }}
+                                </h6>
+                                <br>
+                                <p class="text-sm">See information about your documents</p>
+                            </div>
+                        </div>
+                        <div class="card-body px-0 py-0">
+                            <div class="chat__item__container" id="id_chat_item_container">
+                                <!-- Messages will be displayed here with a scrollbar -->
+                            </div>
+                            <div class="chat-input-container">
+                                <input type="text" id="id_message_send_input" placeholder="Type your message..."/>
+                                <button type="submit" id="id_message_send_button"><i class="fas fa-paper-plane"></i>
+                                    Send
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-            <div style="clear: both;"></div>
-            {% endif %}
-        </div>
-        <div class="chat__item__container" id="id_chat_item_container">
-            <!-- Messages will be displayed here with a scrollbar -->
-        </div>
-        <div class="chat-input-container">
-            <input type="text" id="id_message_send_input" placeholder="Type your message..." />
-            <button type="submit" id="id_message_send_button"><i class="fas fa-paper-plane"></i> Send</button>
         </div>
     </div>
+{% endblock content %}
+
+{% block extrascripts %}
+
     <script>
-        const chatSocket = new WebSocket("ws://" + window.location.host + "/");
+        const userId = {{ user_id }};  // Get the user ID from the context
+        {#const chatSocket = new WebSocket("ws://" + window.location.host + "/");#}
+        const chatSocket = new WebSocket("ws://" + window.location.host + '/ws/chat/' + userId + '/');
         chatSocket.onopen = function (e) {
             console.log("The connection was set up successfully!");
         };
@@ -161,14 +143,27 @@
             }
         };
         document.querySelector("#id_message_send_button").onclick = function (e) {
-            var messageInput = document.querySelector("#id_message_send_input").value;
+            // Get the message input value and trim whitespace
+            var messageInput = document.querySelector("#id_message_send_input").value.trim();
+
+            // Check if the message input is empty
+            if (messageInput === "") {
+                return; // Prevent sending empty messages
+            }
+
+            // Get the current time for the message timestamp
             var currentTime = new Date();
             var time = currentTime.toLocaleTimeString();
+
+            // Send the message through the WebSocket
             chatSocket.send(JSON.stringify({
                 message: messageInput,
                 username: "{{request.user.username}}",
                 time: time
             }));
+
+            // Clear the input field after sending the message
+            document.querySelector("#id_message_send_input").value = "";
         };
         chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data);
@@ -186,6 +181,4 @@
             messageContainer.scrollTop = messageContainer.scrollHeight;
         };
     </script>
-</body>
-
-</html>
+{% endblock extrascripts %}
