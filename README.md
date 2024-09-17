@@ -1,4 +1,4 @@
-![Chat sys1](https://github.com/user-attachments/assets/7e4f9b8b-94ee-4645-a3f1-d7e0a621c7aa)# NoteShare
+# NoteShare
 NoteShare is an AI-driven platform designed for Tunisian university students to share, access, and collaborate on academic documents. The platform features advanced functionalities such as document recommendation, a messaging system, duplication tests, and an efficient search engine to enhance the educational experience.
 
 ## Table of Contents
