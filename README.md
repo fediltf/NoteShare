@@ -48,6 +48,9 @@ Here are some screenshots showcasing the NoteShare app:
 ![Chat sys1](https://github.com/user-attachments/assets/0f92d431-739e-48b3-b58b-a42ab87f4c05)
 ![Chat sys2](https://github.com/user-attachments/assets/d1c4b3ee-a9fb-45de-98dd-90f434da27c8)
 
+- **Admin Dashboard**
+![Admin Dashboard](https://github.com/user-attachments/assets/5c6b88d9-f3ed-4d72-afea-e51f21d58af3)
+
 
 ## Getting Started
 
